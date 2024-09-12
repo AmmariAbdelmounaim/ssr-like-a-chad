@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/styles/styles.css" rel="stylesheet" />
+  </head>
+  <body class="bg-green-200 p-8">
+    <h1 class="text-3xl font-bold mb-4">
+      <% const randomNumber = Math.floor(Math.random() * 100); %> <% const
+      colors = ['red', 'blue', 'green', 'yellow', 'purple']; %> <% const
+      randomColor = colors[Math.floor(Math.random() * colors.length)]; %>
+      <div class="text-<%= randomColor %>-500">
+        Random number: <%= randomNumber %> <% if (randomNumber % 2 === 0) { %>
+        <span class="bg-cyan-600 px-2 py-1 rounded">Even number!</span>
+        <% } else { %>
+        <span class="bg-red-700 px-2 py-1 rounded">Odd number!</span>
+        <% } %>
+      </div>
+      <div class="flex space-x-2 mt-4">
+        <% for (let i = 0; i < 5; i++) { %>
+        <span class="bg-blue-100 px-3 py-1 rounded"
+          ><%= i * randomNumber %></span
+        >
+        <% } %>
+      </div>
+    </h1>
+  </body>
+</html>

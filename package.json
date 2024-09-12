@@ -4,30 +4,42 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "nodemon src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node dist/server.js",
+    "build:css": "postcss ./src/public/styles/tailwind.css -o ./src/public/styles/styles.css --watch",
+    "watch": "npx concurrently \"npm run dev\" \"npm run build:css\" \"npm run browser-sync\"",
+    "browser-sync": "browser-sync start --proxy localhost:8000 --files 'src/views/**/*.ejs, src/public/styles/*.css' --ignore 'node_modules' --no-ui"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "autoprefixer": "^10.4.20",
     "connect-mongo": "^5.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
     "express": "^4.20.0",
     "express-session": "^1.18.0",
     "mongoose": "^8.6.1",
+    "morgan": "^1.10.0",
     "node-ssr": "file:",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "postcss": "^8.4.45",
+    "postcss-cli": "^11.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/express-session": "^1.18.0",
+    "@types/morgan": "^1.9.9",
     "@types/node": "^22.5.4",
     "@types/passport-local": "^1.0.38",
+    "browser-sync": "^3.0.2",
     "nodemon": "^3.1.4",
+    "tailwindcss": "^3.4.11",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.2"
   }
