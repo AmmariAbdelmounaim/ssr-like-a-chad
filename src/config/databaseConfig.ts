@@ -1,37 +1,26 @@
-import { MongoClient, ServerApiVersion } from "mongodb";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-// Fonction pour se connecter à MongoDB
+dotenv.config();  // Charger les variables d'environnement
+
 export async function connectToMongoDB() {
-  // Récupérer l'URI de la base de données à partir des variables d'environnement
   const uri = process.env.DATABASE_URI;
 
-  // Si l'URI n'est pas défini, lever une erreur
   if (!uri) {
     throw new Error("DATABASE_URI is not set in the environment variables");
   }
 
-  // Créer un client MongoDB avec les options nécessaires
-  const client = new MongoClient(uri, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-  });
-
   try {
-    // Tenter de se connecter à MongoDB
-    await client.connect();
-    console.log("Successfully connected to MongoDB");
+    // Connexion à MongoDB via Mongoose
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 60000,  // Timeout augmenté à 60 secondes
+      socketTimeoutMS: 120000,          // Timeout des opérations augmenté à 120 secondes
+      connectTimeoutMS: 30000,          // Timeout de connexion augmenté à 30 secondes
+    });
 
-    // Optionnel : Vérifier que la connexion est active en faisant une requête
-    const db = client.db(); // Utilise la base de données par défaut (déclarée dans l'URI)
-    const collections = await db.listCollections().toArray(); // Liste des collections
-    console.log("Collections in the database:", collections.map(col => col.name));
+    console.log("Successfully connected to MongoDB with Mongoose");
 
-    return client; // Optionnel : retourne le client si tu en as besoin dans ton application
-  }catch (err: any) {
-  console.error("Error connecting to MongoDB:", err.message || err);
-}
-
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+  }
 }
