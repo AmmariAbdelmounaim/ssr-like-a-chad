@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/styles/styles.css" rel="stylesheet" />
+    <script src="/src/public/js/register.js" defer></script>
+  </head>
+
+  <body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <!-- Card -->
+    <div
+      class="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-md"
+    >
+      <!-- Card Header -->
+      <div class="flex flex-col w-full space-y-1 p-6">
+        <!-- Card Title -->
+        <div
+          class="text-2xl font-semibold text-center leading-none tracking-tight"
+        >
+          Enregistrez-vous
+        </div>
+        <!-- Card Description -->
+        <div class="text-sm text-center text-muted-foreground">
+          Créez votre compte
+        </div>
+      </div>
+      <!-- Card Content -->
+      <div class="p-6 pt-0 space-y-4">
+        <!-- Form Switcher Buttons -->
+        <div class="w-full flex items-center justify-center">
+          <div class="p-1 rounded-lg bg-gray-200 flex gap-1">
+            <button
+              id="utilisateurBtn"
+              class="bg-primary text-primary-foreground px-4 py-2 rounded-lg"
+              onclick="showForm('utilisateur')"
+            >
+              Utilisateur
+            </button>
+            <button
+              id="agentBtn"
+              class="bg-transparent text-foreground px-4 py-2 rounded-lg"
+              onclick="showForm('agent')"
+            >
+              Agent immobilier
+            </button>
+          </div>
+        </div>
+
+        <!-- Utilisateur Form -->
+        <form id="utilisateurForm" class="space-y-4">
+          <div class="space-y-2">
+            <label
+              class="text-sm font-medium leading-none"
+              for="email-utilisateur"
+              >Email</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="email-utilisateur"
+              placeholder="nom@exemple.com"
+              type="email"
+            />
+            <p
+              id="email-utilisateur-error"
+              class="text-destructive text-sm hidden"
+            ></p>
+          </div>
+          <div class="space-y-2">
+            <label
+              class="text-sm font-medium leading-none"
+              for="password-utilisateur"
+              >Mot de passe</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="password-utilisateur"
+              type="password"
+            />
+            <p
+              id="password-utilisateur-error"
+              class="text-destructive text-sm hidden"
+            ></p>
+          </div>
+          <button
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-10 px-4 py-2 w-full hover:bg-primary/90"
+            type="submit"
+          >
+            Se connecter
+          </button>
+        </form>
+
+        <!-- Agent Immobilier Form (Initially Hidden) -->
+        <form
+          id="agentForm"
+          class="space-y-4 hidden"
+          onsubmit="validateAgentForm(event)"
+        >
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none" for="email-agent"
+              >Email</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="email-agent"
+              placeholder="agent@exemple.com"
+              type="email"
+            />
+            <p
+              id="email-agent-error"
+              class="text-destructive text-sm hidden"
+            ></p>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none" for="password-agent"
+              >Mot de passe</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="password-agent"
+              type="password"
+            />
+            <p
+              id="password-agent-error"
+              class="text-destructive text-sm hidden"
+            ></p>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium leading-none" for="company"
+              >Nom de l'entreprise</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="company"
+              placeholder="Nom de l'entreprise"
+              type="text"
+            />
+            <p id="company-error" class="text-destructive text-sm hidden"></p>
+          </div>
+          <button
+            class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-10 px-4 py-2 w-full hover:bg-primary/90"
+            type="submit"
+          >
+            S'enregistrer
+          </button>
+        </form>
+
+        <!-- Separator -->
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <span class="w-full border-t"></span>
+          </div>
+          <div class="relative flex justify-center text-xs uppercase">
+            <span class="bg-background px-2 text-muted-foreground">Ou</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card footer -->
+      <div class="flex justify-center items-center p-6 pt-0">
+        <p class="text-sm text-muted-foreground">
+          Déjà un compte ?
+          <a href="/auth/login" class="text-primary hover:underline">
+            Se connecter
+          </a>
+        </p>
+      </div>
+    </div>
+  </body>
+  <!-- JavaScript -->
+  <script>
+    function showForm(formType) {
+      const utilisateurForm = document.getElementById("utilisateurForm");
+      const agentForm = document.getElementById("agentForm");
+      const utilisateurBtn = document.getElementById("utilisateurBtn");
+      const agentBtn = document.getElementById("agentBtn");
+
+      if (formType === "utilisateur") {
+        utilisateurForm.classList.remove("hidden");
+        agentForm.classList.add("hidden");
+        utilisateurBtn.classList.add("bg-primary", "text-primary-foreground");
+        utilisateurBtn.classList.remove("bg-transparent", "text-foreground");
+        agentBtn.classList.remove("bg-primary", "text-primary-foreground");
+        agentBtn.classList.add("bg-transparent", "text-foreground");
+      } else {
+        agentForm.classList.remove("hidden");
+        utilisateurForm.classList.add("hidden");
+        utilisateurBtn.classList.remove(
+          "bg-primary",
+          "text-primary-foreground"
+        );
+        utilisateurBtn.classList.add("bg-transparent", "text-foreground");
+        agentBtn.classList.add("bg-primary", "text-primary-foreground");
+        agentBtn.classList.remove("bg-transparent", "text-foreground");
+      }
+    }
+
+    // Function to validate email format
+    function validateEmail(email) {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailPattern.test(email);
+    }
+
+    // Function to show error messages
+    function showError(errorId, message) {
+      const errorElement = document.getElementById(errorId);
+      errorElement.textContent = message;
+      errorElement.classList.remove("hidden");
+    }
+
+    // Function to hide error messages
+    function hideError(errorId) {
+      const errorElement = document.getElementById(errorId);
+      errorElement.classList.add("hidden");
+    }
+
+    // Function to validate Utilisateur form
+    function validateUtilisateurForm(event) {
+      event.preventDefault();
+      let isValid = true;
+
+      const emailUtilisateur = document.getElementById("email-utilisateur");
+      const passwordUtilisateur = document.getElementById(
+        "password-utilisateur"
+      );
+
+      // Validate email
+      if (!validateEmail(emailUtilisateur.value)) {
+        showError("email-utilisateur-error", "Email Invalide");
+        isValid = false;
+      } else {
+        hideError("email-utilisateur-error");
+      }
+
+      // Validate password
+      if (passwordUtilisateur.value.length < 6) {
+        showError("password-utilisateur-error", "Mot de passe invalide");
+        isValid = false;
+      } else {
+        hideError(passwordUtilisateur, "password-utilisateur-error");
+      }
+
+      if (isValid) {
+        event.target.submit();
+      }
+    }
+
+    // Function to validate Agent form
+    function validateAgentForm(event) {
+      event.preventDefault();
+      let isValid = true;
+
+      const emailAgent = document.getElementById("email-agent");
+      const passwordAgent = document.getElementById("password-agent");
+      const company = document.getElementById("company");
+
+      // Validate email
+      if (!validateEmail(emailAgent.value)) {
+        showError("email-agent-error", "Email Invalide");
+        isValid = false;
+      } else {
+        hideError("email-agent-error");
+      }
+
+      // Validate password
+      if (passwordAgent.value.length < 6) {
+        showError("password-agent-error", "Password invalide");
+        isValid = false;
+      } else {
+        hideError("password-agent-error");
+      }
+
+      // Validate company
+      if (company.value.trim() === "") {
+        showError("company-error", "Nom de l'entreprise obligatoire");
+        isValid = false;
+      } else {
+        hideError("company-error");
+      }
+
+      if (isValid) {
+        event.target.submit();
+      }
+    }
+
+    // Attach event listeners to forms
+    document.addEventListener("DOMContentLoaded", (event) => {
+      document
+        .getElementById("utilisateurForm")
+        .addEventListener("submit", validateUtilisateurForm);
+      document
+        .getElementById("agentForm")
+        .addEventListener("submit", validateAgentForm);
+    });
+  </script>
+</html>
