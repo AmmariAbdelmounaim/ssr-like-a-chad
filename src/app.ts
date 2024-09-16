@@ -23,7 +23,10 @@ app.get('/', (req: Request, res: Response) => {
   res.render('index', { title: 'Welcome to My Express App!' });
 });
 
-app.get('/login',(req:Request,res:Response)=>{
-  res.render('login');
+app.get('/auth/login',(req:Request,res:Response)=>{
+  res.render('auth/login');
 });
 
+app.get('/auth/register',(req:Request,res:Response)=>{
+  res.render('auth/register');
+});
