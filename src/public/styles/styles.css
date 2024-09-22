@@ -642,6 +642,9 @@ video {
 .border-t {
   border-top-width: 1px;
 }
+.border-destructive {
+  border-color: hsl(var(--destructive));
+}
 .border-input {
   border-color: hsl(var(--input));
 }
@@ -671,8 +674,11 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
-.bg-primary {
-  background-color: hsl(var(--primary));
+.p-2 {
+  padding: 0.5rem;
+}
+.p-6 {
+  padding: 1.5rem;
 }
 .p-8 {
   padding: 2rem;

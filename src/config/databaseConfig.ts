@@ -1,26 +1,16 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-
-dotenv.config();  // Charger les variables d'environnement
-
+import mongoose from "mongoose";
 export async function connectToMongoDB() {
-  const uri = process.env.DATABASE_URI;
+  const uri =
+    "mongodb+srv://abdelmounaim:abdelmounaim@cluster0.tdrgp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
   if (!uri) {
-    throw new Error("DATABASE_URI is not set in the environment variables");
+    throw new Error("DATABASE_URI is not set");
   }
 
   try {
-    // Connexion à MongoDB via Mongoose
-    await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 60000,  // Timeout augmenté à 60 secondes
-      socketTimeoutMS: 120000,          // Timeout des opérations augmenté à 120 secondes
-      connectTimeoutMS: 30000,          // Timeout de connexion augmenté à 30 secondes
-    });
-
-    console.log("Successfully connected to MongoDB with Mongoose");
-
-  } catch (error) {
-    console.error("Error connecting to MongoDB:", error);
+    await mongoose.connect(uri);
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("Error connecting to MongoDB:", err);
   }
 }
