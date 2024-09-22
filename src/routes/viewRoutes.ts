@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { authenticateViewToken } from "../middlewares/authenticateViewToken";
+import { authorizeRole } from "../middlewares/authorizeRole";
 
 const viewRouter = Router();
 
@@ -15,8 +16,22 @@ viewRouter.get("/auth/register", (req, res) => {
   res.render("auth/register");
 });
 
-viewRouter.get("/protected/dashboard", authenticateViewToken, (req, res) => {
-  res.render("protected/dashboard"); // Render protected.ejs with user data
-});
+viewRouter.get(
+  "/dashboard",
+  authenticateViewToken,
+  authorizeRole("agent"),
+  (req, res) => {
+    res.render("protected/agent/dashboard");
+  }
+);
+
+viewRouter.get(
+  "/annonce",
+  authenticateViewToken,
+  authorizeRole("user"),
+  (req, res) => {
+    res.render("protected/user/annonce");
+  }
+);
 
 export default viewRouter;
