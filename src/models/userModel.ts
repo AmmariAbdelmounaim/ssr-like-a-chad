@@ -1,4 +1,4 @@
-import mongoose, { CallbackError, Document } from "mongoose";
+import mongoose, { Document } from "mongoose";
 import bcrypt from "bcryptjs";
 
 // Define a User interface

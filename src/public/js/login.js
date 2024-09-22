@@ -1,3 +1,8 @@
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("login-form");
+  form.addEventListener("submit", validateLoginForm);
+});
+
 // Function to validate email format
 function validateEmail(email) {
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -15,6 +20,12 @@ function showError(errorId, message) {
 function hideError(errorId) {
   const errorElement = document.getElementById(errorId);
   errorElement.classList.add("hidden");
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
 }
 
 async function validateLoginForm(event) {
@@ -58,12 +69,14 @@ async function validateLoginForm(event) {
         body: JSON.stringify(jsonData),
       });
 
-      if (response.ok) {
-        window.location.href = "/protected/dashboard";
+      const data = await response.json();
+
+      if (data.role === "user") {
+        window.location.href = "/annonce";
+      } else if (data.role === "agent") {
+        window.location.href = "/dashboard";
       } else {
-        error.classList.remove("hidden");
-        error.classList.add("flex");
-        error.textContent = "Email ou mot de passe incorrect";
+        alert("Unauthorized");
       }
     } catch (error) {
       error.classList.remove("hidden");
@@ -72,8 +85,3 @@ async function validateLoginForm(event) {
     }
   }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("login-form");
-  form.addEventListener("submit", validateLoginForm);
-});

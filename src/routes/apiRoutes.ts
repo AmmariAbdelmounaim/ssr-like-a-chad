@@ -4,6 +4,7 @@ import { User } from "../models/userModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authenticateAPIToken } from "../middlewares/authenticateAPIToken";
+import { authorizeRole } from "../middlewares/authorizeRole";
 
 const apiRouter = Router();
 
@@ -79,11 +80,10 @@ apiRouter.post("/auth/login", async (req, res) => {
   user.token = token;
   await user.save();
 
-  console.log("Redirecting to /protected/dashboard for user: ", email);
-  res
-    .status(200)
-    .cookie("token", token, { httpOnly: true })
-    .json({ message: "Login successful" });
+  res.cookie("token", token, { httpOnly: true });
+
+  const role = user.role;
+  return res.status(200).json({ role });
 });
 
 // For logout
@@ -97,4 +97,21 @@ apiRouter.get("/protected", authenticateAPIToken, (req, res) => {
   res.json({ message: "Access granted!", user: req.user });
 });
 
+apiRouter.get(
+  "/agent",
+  authenticateAPIToken,
+  authorizeRole("agent"),
+  (req, res) => {
+    res.json({ message: "Access granted!", user: req.user });
+  }
+);
+
+apiRouter.get(
+  "/user",
+  authenticateAPIToken,
+  authorizeRole("user"),
+  (req, res) => {
+    res.json({ message: "Access granted!", user: req.user });
+  }
+);
 export default apiRouter;
