@@ -1,7 +1,13 @@
-import express, { Request, Response } from 'express';
-import path from 'path';
-import { connectToMongoDB } from './config/databaseConfig';
-import dotenv from 'dotenv';
+import express, { NextFunction, Request, Response } from "express";
+import path from "path";
+import { connectToMongoDB } from "./config/databaseConfig";
+import { bearerStrategy } from "./config/passportBearerStrategy";
+import { cookieStrategy } from "./config/passportCookieStrategy";
+import dotenv from "dotenv";
+import passport from "passport";
+import cookieParser from "cookie-parser";
+import apiRouter from "./routes/apiRoutes";
+import viewRouter from "./routes/viewRoutes";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -9,24 +15,32 @@ dotenv.config();
 export const app = express();
 
 // MongoDB
-connectToMongoDB() 
+connectToMongoDB();
 
 // EJS
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Middleware setup :
+// Body parser
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Static assets
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Define routes
-app.get('/', (req: Request, res: Response) => {
-  res.render('index', { title: 'Welcome to My Express App!' });
+app.use(express.static(path.join(__dirname, "public")));
+// For parsing cookies
+app.use(cookieParser());
+// Logging middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log("Incoming request: ", req.method, req.url);
+  next();
 });
+app.use(passport.initialize());
 
-app.get('/auth/login',(req:Request,res:Response)=>{
-  res.render('auth/login');
-});
+// Configs :
+bearerStrategy();
+cookieStrategy();
 
-app.get('/auth/register',(req:Request,res:Response)=>{
-  res.render('auth/register');
-});
+// Use routes
+app.use("/api", apiRouter);
+app.use("/", viewRouter);
