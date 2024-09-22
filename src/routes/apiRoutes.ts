@@ -81,13 +81,9 @@ apiRouter.post("/auth/login", async (req, res) => {
   await user.save();
 
   res.cookie("token", token, { httpOnly: true });
-  console.log("Redirecting to /protected/dashboard for user: ", email);
-  if (user.role === "agent") {
-    res.redirect("/dashboard");
-  }
-  if (user.role === "user") {
-    res.redirect("/annonce");
-  }
+
+  const role = user.role;
+  return res.status(200).json({ role });
 });
 
 // For logout
