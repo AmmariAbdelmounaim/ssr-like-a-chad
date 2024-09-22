@@ -79,9 +79,11 @@ apiRouter.post("/auth/login", async (req, res) => {
   user.token = token;
   await user.save();
 
-  res.cookie("token", token, { httpOnly: true });
   console.log("Redirecting to /protected/dashboard for user: ", email);
-  res.redirect("/protected/dashboard");
+  res
+    .status(200)
+    .cookie("token", token, { httpOnly: true })
+    .json({ message: "Login successful" });
 });
 
 // For logout
