@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/styles/styles.css" rel="stylesheet" />
-    <script src="/src/public/js/register.js" defer></script>
   </head>
 
   <body class="flex items-center justify-center min-h-screen bg-gray-100">
@@ -27,6 +26,11 @@
       </div>
       <!-- Card Content -->
       <div class="p-6 pt-0 space-y-4">
+        <!-- Error Message -->
+        <div
+          class="hidden p-2 rounded-md text-destructive border border-destructive w-full text-md items-center justify-center"
+          id="error"
+        ></div>
         <!-- Form Switcher Buttons -->
         <div class="w-full flex items-center justify-center">
           <div class="p-1 rounded-lg bg-gray-200 flex gap-1">
@@ -48,8 +52,29 @@
         </div>
 
         <!-- Utilisateur Form -->
-        <form id="utilisateurForm" class="space-y-4">
+        <form
+          id="utilisateurForm"
+          class="space-y-4"
+          onsubmit="validateUtilisateurForm(event)"
+        >
           <div class="space-y-2">
+            <label
+              class="text-sm font-medium leading-none"
+              for="nom-utilisateur"
+              >Nom</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="nom-utilisateur"
+              name="username"
+              placeholder="John Doe"
+              type="text"
+            />
+            <p
+              id="nom-utilisateur-error"
+              class="text-destructive text-sm hidden"
+            ></p>
+
             <label
               class="text-sm font-medium leading-none"
               for="email-utilisateur"
@@ -58,6 +83,7 @@
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="email-utilisateur"
+              name="email"
               placeholder="nom@exemple.com"
               type="email"
             />
@@ -75,18 +101,20 @@
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="password-utilisateur"
+              name="password"
               type="password"
             />
             <p
               id="password-utilisateur-error"
               class="text-destructive text-sm hidden"
             ></p>
+            <input type="hidden" name="role" value="user" />
           </div>
           <button
             class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-10 px-4 py-2 w-full hover:bg-primary/90"
             type="submit"
           >
-            Se connecter
+            S'enregistrer
           </button>
         </form>
 
@@ -97,12 +125,25 @@
           onsubmit="validateAgentForm(event)"
         >
           <div class="space-y-2">
+            <label class="text-sm font-medium leading-none" for="nom-agent"
+              >Nom</label
+            >
+            <input
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              id="nom-agent"
+              name="username"
+              placeholder="John Doe"
+              type="text"
+            />
+            <p id="nom-agent-error" class="text-destructive text-sm hidden"></p>
+
             <label class="text-sm font-medium leading-none" for="email-agent"
               >Email</label
             >
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="email-agent"
+              name="email"
               placeholder="agent@exemple.com"
               type="email"
             />
@@ -118,6 +159,7 @@
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="password-agent"
+              name="password"
               type="password"
             />
             <p
@@ -132,11 +174,13 @@
             <input
               class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               id="company"
+              name="company"
               placeholder="Nom de l'entreprise"
               type="text"
             />
             <p id="company-error" class="text-destructive text-sm hidden"></p>
           </div>
+          <input type="hidden" name="role" value="agent" />
           <button
             class="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground h-10 px-4 py-2 w-full hover:bg-primary/90"
             type="submit"
@@ -144,16 +188,6 @@
             S'enregistrer
           </button>
         </form>
-
-        <!-- Separator -->
-        <div class="relative">
-          <div class="absolute inset-0 flex items-center">
-            <span class="w-full border-t"></span>
-          </div>
-          <div class="relative flex justify-center text-xs uppercase">
-            <span class="bg-background px-2 text-muted-foreground">Ou</span>
-          </div>
-        </div>
       </div>
 
       <!-- Card footer -->
@@ -168,129 +202,5 @@
     </div>
   </body>
   <!-- JavaScript -->
-  <script>
-    function showForm(formType) {
-      const utilisateurForm = document.getElementById("utilisateurForm");
-      const agentForm = document.getElementById("agentForm");
-      const utilisateurBtn = document.getElementById("utilisateurBtn");
-      const agentBtn = document.getElementById("agentBtn");
-
-      if (formType === "utilisateur") {
-        utilisateurForm.classList.remove("hidden");
-        agentForm.classList.add("hidden");
-        utilisateurBtn.classList.add("bg-primary", "text-primary-foreground");
-        utilisateurBtn.classList.remove("bg-transparent", "text-foreground");
-        agentBtn.classList.remove("bg-primary", "text-primary-foreground");
-        agentBtn.classList.add("bg-transparent", "text-foreground");
-      } else {
-        agentForm.classList.remove("hidden");
-        utilisateurForm.classList.add("hidden");
-        utilisateurBtn.classList.remove(
-          "bg-primary",
-          "text-primary-foreground"
-        );
-        utilisateurBtn.classList.add("bg-transparent", "text-foreground");
-        agentBtn.classList.add("bg-primary", "text-primary-foreground");
-        agentBtn.classList.remove("bg-transparent", "text-foreground");
-      }
-    }
-
-    // Function to validate email format
-    function validateEmail(email) {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailPattern.test(email);
-    }
-
-    // Function to show error messages
-    function showError(errorId, message) {
-      const errorElement = document.getElementById(errorId);
-      errorElement.textContent = message;
-      errorElement.classList.remove("hidden");
-    }
-
-    // Function to hide error messages
-    function hideError(errorId) {
-      const errorElement = document.getElementById(errorId);
-      errorElement.classList.add("hidden");
-    }
-
-    // Function to validate Utilisateur form
-    function validateUtilisateurForm(event) {
-      event.preventDefault();
-      let isValid = true;
-
-      const emailUtilisateur = document.getElementById("email-utilisateur");
-      const passwordUtilisateur = document.getElementById(
-        "password-utilisateur"
-      );
-
-      // Validate email
-      if (!validateEmail(emailUtilisateur.value)) {
-        showError("email-utilisateur-error", "Email Invalide");
-        isValid = false;
-      } else {
-        hideError("email-utilisateur-error");
-      }
-
-      // Validate password
-      if (passwordUtilisateur.value.length < 6) {
-        showError("password-utilisateur-error", "Mot de passe invalide");
-        isValid = false;
-      } else {
-        hideError(passwordUtilisateur, "password-utilisateur-error");
-      }
-
-      if (isValid) {
-        event.target.submit();
-      }
-    }
-
-    // Function to validate Agent form
-    function validateAgentForm(event) {
-      event.preventDefault();
-      let isValid = true;
-
-      const emailAgent = document.getElementById("email-agent");
-      const passwordAgent = document.getElementById("password-agent");
-      const company = document.getElementById("company");
-
-      // Validate email
-      if (!validateEmail(emailAgent.value)) {
-        showError("email-agent-error", "Email Invalide");
-        isValid = false;
-      } else {
-        hideError("email-agent-error");
-      }
-
-      // Validate password
-      if (passwordAgent.value.length < 6) {
-        showError("password-agent-error", "Password invalide");
-        isValid = false;
-      } else {
-        hideError("password-agent-error");
-      }
-
-      // Validate company
-      if (company.value.trim() === "") {
-        showError("company-error", "Nom de l'entreprise obligatoire");
-        isValid = false;
-      } else {
-        hideError("company-error");
-      }
-
-      if (isValid) {
-        event.target.submit();
-      }
-    }
-
-    // Attach event listeners to forms
-    document.addEventListener("DOMContentLoaded", (event) => {
-      document
-        .getElementById("utilisateurForm")
-        .addEventListener("submit", validateUtilisateurForm);
-      document
-        .getElementById("agentForm")
-        .addEventListener("submit", validateAgentForm);
-    });
-  </script>
+  <script src="/js/register.js"></script>
 </html>

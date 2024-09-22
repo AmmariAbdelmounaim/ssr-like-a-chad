@@ -1,22 +1,14 @@
-import { MongoClient,ServerApiVersion  } from "mongodb";
-
+import mongoose from "mongoose";
 export async function connectToMongoDB() {
-  const uri = process.env.DATABASE_URI;
+  const uri =
+    "mongodb+srv://abdelmounaim:abdelmounaim@cluster0.tdrgp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-  if(!uri) {
+  if (!uri) {
     throw new Error("DATABASE_URI is not set");
   }
 
-  const client = new MongoClient(uri, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-  });
-
   try {
-    await client.connect();
+    await mongoose.connect(uri);
     console.log("Connected to MongoDB");
   } catch (err) {
     console.error("Error connecting to MongoDB:", err);

@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 
@@ -20,18 +21,22 @@
       <div class="text-sm text-center text-muted-foreground">
         Connectez-vous à votre compte
       </div>
+      <!-- Error Message -->
+      <div class="hidden p-2 rounded-md  text-destructive border border-destructive w-full text-md items-center justify-center" id="error"></div>
     </div>
     <!-- Card Content -->
     <div class="p-6 pt-0 space-y-4">
-      <form class="space-y-4" id="login-form">
+      <form class="space-y-4" id="login-form"
+      onsubmit="validateLoginForm(event)"
+      >
         <div class="space-y-2">
           <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="email">Email</label>
-          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="email" placeholder="nom@exemple.com" type="email" />
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="email" placeholder="nom@exemple.com" name="email" type="email" />
           <p id="email-error" class="text-destructive text-sm hidden"></p>
         </div>
         <div class="space-y-2">
           <label class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" htmlFor="password">Mot de passe</label>
-          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="password" type="password" />
+          <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" name="password" id="password" type="password" />
           <p id="password-error" class="text-destructive text-sm hidden"></p>
         </div>
         <!-- Default Button -->
@@ -50,7 +55,7 @@
       <!-- Outline Button -->
       <!-- OAuth With GooGle -->
       <div class="flex flex-col gap-2">
-        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full border border-input bg-background hover:bg-accent h-10 px-4 py-2 hover:text-accent-foreground" variant="outline" class="w-full">
+        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 w-full border border-input bg-background hover:bg-accent h-10 px-4 py-2 hover:text-accent-foreground" variant="outline" type="submit" class="w-full">
           <div class="mr-2 h-4 w-4">
             <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 48 48">
               <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"></path>
@@ -74,58 +79,5 @@
     </div>
   </div>
 </body>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('login-form');
-    form.addEventListener('submit', validateLoginForm);
-  });
-
-  // Function to validate email format
-  function validateEmail(email) {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  }
-
-  // Function to show error messages
-  function showError(errorId, message) {
-    const errorElement = document.getElementById(errorId);
-    errorElement.textContent = message;
-    errorElement.classList.remove("hidden");
-  }
-
-  // Function to hide error messages
-  function hideError(errorId) {
-    const errorElement = document.getElementById(errorId);
-    errorElement.classList.add("hidden");
-  }
-
-  function validateLoginForm(event) {
-    event.preventDefault();
-    let isValid = true;
-
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-
-    // Validate email
-    if (!validateEmail(email.value)) {
-      showError("email-error", "Email invalide");
-      isValid = false;
-    } else {
-      hideError("email-error");
-    }
-
-    // Validate password
-    if (password.value.length < 6) {
-      showError("password-error", "Mot de passe invalide");
-      isValid = false;
-    } else {
-      hideError("password-error");
-    }
-
-    if (isValid) {
-      event.target.submit();
-    }
-  }
-</script>
-
+<script src="/js/login.js"></script>
 </html>
