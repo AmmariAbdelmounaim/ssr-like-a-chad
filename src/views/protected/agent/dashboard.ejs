@@ -3,10 +3,440 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Protected - Agent</title>
+    <link href="/styles/styles.css" rel="stylesheet" />
+    <title>Agent Dashboard</title>
   </head>
-  <body>
-    <p>This is a protected agent page.</p>
-    <a href="/api/logout">Logout</a>
-  </body>
+  <div class="min-h-screen bg-gray-100" data-id="1">
+    <nav class="fixed top-0 left-0 right-0 bg-white shadow-sm z-10" data-id="2">
+      <div class="px-4 sm:px-6 lg:px-8" data-id="3">
+        <div class="max-w-7xl mx-auto flex justify-between h-16" data-id="4">
+          <div class="flex items-center" data-id="5">
+            <span class="text-3xl font-bold text-gray-900" data-id="6"
+              >Elite Properties</span
+            >
+          </div>
+          <div class="flex items-center" data-id="7">
+            <button
+              class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground px-4 py-2 relative h-8 w-8 rounded-full"
+              data-id="11"
+              type="button"
+              id="radix-:r0:"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              data-state="closed"
+            >
+              <span
+                class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8"
+                data-id="12"
+                ><span
+                  class="flex h-full w-full items-center justify-center rounded-full bg-muted"
+                  data-id="13"
+                  >RA</span
+                ></span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8" data-id="18">
+      <div class="max-w-7xl mx-auto" data-id="19">
+        <div class="flex justify-between">
+          <h1 class="text-2xl font-semibold text-gray-900 mb-6" data-id="20">
+            Property Listings
+          </h1>
+          <button
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90"
+          >
+            Publish an Article
+          </button>
+        </div>
+
+        <div
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          data-id="21"
+        >
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col"
+            data-id="22"
+            data-v0-t="card"
+          >
+            <div class="flex flex-col space-y-1.5 p-6" data-id="23">
+              <h3
+                class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight"
+                data-id="24"
+              >
+                Luxurious Beachfront Villa
+              </h3>
+              <div class="flex flex-wrap gap-2 mt-2" data-id="25">
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                  data-id="26"
+                  data-v0-t="badge"
+                >
+                  Sale
+                </div>
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                  data-id="27"
+                  data-v0-t="badge"
+                >
+                  Published
+                </div>
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                  data-id="28"
+                  data-v0-t="badge"
+                >
+                  Available
+                </div>
+              </div>
+            </div>
+            <div class="p-6 flex-grow" data-id="29">
+              <p class="text-sm text-gray-600 mb-2" data-id="30">
+                A stunning 5-bedroom villa with panoramic ocean views...
+              </p>
+              <p class="font-semibold" data-id="31">$2,500,000</p>
+              <p class="text-sm text-gray-500" data-id="32">
+                Available: Immediate
+              </p>
+              <img
+                data-id="33"
+                src="https://do84cgvgcm805.cloudfront.net/article/362/1200/25cf654358d7812a07902fa42f249dedbec8eb058bdda541c88b9e3b317a93d9.jpg"
+                alt="Luxurious Beachfront Villa"
+                class="mt-4 rounded-md object-cover w-full h-48"
+              />
+            </div>
+            <div class="p-6 flex justify-between items-center" data-id="36">
+              <span class="text-sm text-gray-500" data-id="37"
+                >12 comments</span
+              >
+              <div class="flex space-x-2" data-id="38">
+                <button
+                  class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                  data-id="39"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#ef4444"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-trash2 h-4 w-4"
+                    data-id="40"
+                  >
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    <line x1="10" x2="10" y1="11" y2="17"></line>
+                    <line x1="14" x2="14" y1="11" y2="17"></line>
+                  </svg></button
+                ><button
+                  class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                  data-id="41"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-square-pen h-4 w-4"
+                    data-id="42"
+                  >
+                    <path
+                      d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    ></path>
+                    <path
+                      d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col"
+            data-id="22"
+            data-v0-t="card"
+          >
+            <div class="flex flex-col space-y-1.5 p-6" data-id="23">
+              <h3
+                class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight"
+                data-id="24"
+              >
+                Modern City Apartment
+              </h3>
+              <div class="flex flex-wrap gap-2 mt-2" data-id="25">
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80"
+                  data-id="26"
+                  data-v0-t="badge"
+                >
+                  Rental
+                </div>
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground"
+                  data-id="27"
+                  data-v0-t="badge"
+                >
+                  Not Published
+                </div>
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                  data-id="28"
+                  data-v0-t="badge"
+                >
+                  Available
+                </div>
+              </div>
+            </div>
+            <div class="p-6 flex-grow" data-id="29">
+              <p class="text-sm text-gray-600 mb-2" data-id="30">
+                Sleek 2-bedroom apartment in the heart of downtown...
+              </p>
+              <p class="font-semibold" data-id="31">$2,800/month</p>
+              <p class="text-sm text-gray-500" data-id="32">
+                Available: 2023-08-01
+              </p>
+              <div
+                class="mt-4 rounded-md bg-gray-200 w-full h-48 flex items-center justify-center"
+                data-id="34"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-home h-12 w-12 text-gray-400"
+                  data-id="35"
+                >
+                  <path
+                    d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+            </div>
+            <div class="p-6 flex justify-between items-center" data-id="36">
+              <span class="text-sm text-gray-500" data-id="37">5 comments</span>
+              <div class="flex space-x-2" data-id="38">
+                <button
+                  class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-destructive-foreground h-10 w-10"
+                  data-id="39"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#ef4444"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-trash2 h-4 w-4"
+                    data-id="40"
+                  >
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    <line x1="10" x2="10" y1="11" y2="17"></line>
+                    <line x1="14" x2="14" y1="11" y2="17"></line>
+                  </svg>
+                </button>
+                <button
+                  class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                  data-id="41"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-square-pen h-4 w-4"
+                    data-id="42"
+                  >
+                    <path
+                      d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    ></path>
+                    <path
+                      d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col"
+            data-id="22"
+            data-v0-t="card"
+          >
+            <div class="flex flex-col space-y-1.5 p-6" data-id="23">
+              <h3
+                class="whitespace-nowrap text-2xl font-semibold leading-none tracking-tight"
+                data-id="24"
+              >
+                Cozy Suburban House
+              </h3>
+              <div class="flex flex-wrap gap-2 mt-2" data-id="25">
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                  data-id="26"
+                  data-v0-t="badge"
+                >
+                  Sale
+                </div>
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                  data-id="27"
+                  data-v0-t="badge"
+                >
+                  Published
+                </div>
+                <div
+                  class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80"
+                  data-id="28"
+                  data-v0-t="badge"
+                >
+                  Sold
+                </div>
+              </div>
+            </div>
+            <div class="p-6 flex-grow" data-id="29">
+              <p class="text-sm text-gray-600 mb-2" data-id="30">
+                Charming 3-bedroom house with a spacious backyard...
+              </p>
+              <p class="font-semibold" data-id="31">$450,000</p>
+              <p class="text-sm text-gray-500" data-id="32">Available: Sold</p>
+              <div
+                class="mt-4 rounded-md bg-gray-200 w-full h-48 flex items-center justify-center"
+                data-id="34"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-home h-12 w-12 text-gray-400"
+                  data-id="35"
+                >
+                  <path
+                    d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                  ></path>
+                  <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+              </div>
+            </div>
+            <div class="p-6 flex justify-between items-center" data-id="36">
+              <span class="text-sm text-gray-500" data-id="37">8 comments</span>
+              <div class="flex space-x-2" data-id="38">
+                <button
+                  class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                  data-id="39"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#ef4444"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-trash2 h-4 w-4"
+                    data-id="40"
+                  >
+                    <path d="M3 6h18"></path>
+                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                    <line x1="10" x2="10" y1="11" y2="17"></line>
+                    <line x1="14" x2="14" y1="11" y2="17"></line>
+                  </svg></button
+                ><button
+                  class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
+                  data-id="41"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-square-pen h-4 w-4"
+                    data-id="42"
+                  >
+                    <path
+                      d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                    ></path>
+                    <path
+                      d="M18.375 2.625a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4Z"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div
+            class="rounded-lg border bg-card text-card-foreground shadow-sm flex items-center justify-center min-h-[24rem]"
+            data-id="43"
+            data-v0-t="card"
+          >
+            <button
+              class="whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md w-full h-full p-8 flex flex-col items-center justify-center"
+              data-id="44"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-circle-plus h-12 w-12 mb-2"
+                data-id="45"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M8 12h8"></path>
+                <path d="M12 8v8"></path>
+              </svg>
+              <span data-id="46"> Add New Listing </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
 </html>
