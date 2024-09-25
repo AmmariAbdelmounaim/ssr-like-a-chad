@@ -123,14 +123,14 @@ async function validateAgentForm(event) {
   event.preventDefault();
   let emailValid = true;
   let passwordValid = true;
-  let companyValid = true;
+  let agencyNameValid = true;
   let nomValid = true;
   const error = document.getElementById("error");
 
   const nomAgent = document.getElementById("nom-agent");
   const emailAgent = document.getElementById("email-agent");
   const passwordAgent = document.getElementById("password-agent");
-  const company = document.getElementById("company");
+  const agencyName = document.getElementById("agencyName");
 
   // Validate nom
   if (!validateNom(nomAgent.value, "nom-agent-error")) {
@@ -155,21 +155,22 @@ async function validateAgentForm(event) {
     passwordValid = true;
   }
 
-  // Validate company
-  if (company.value.trim() === "") {
-    showError("company-error", "Nom de l'entreprise obligatoire");
-    companyValid = false;
+  // Validate agencyName
+  if (agencyName.value.trim() === "") {
+    showError("agencyName-error", "Nom de l'entreprise obligatoire");
+    agencyNameValid = false;
   } else {
-    hideError("company-error");
-    companyValid = true;
+    hideError("agencyName-error");
+    agencyNameValid = true;
   }
 
-  if (emailValid && passwordValid && companyValid && nomValid) {
+  if (emailValid && passwordValid && agencyNameValid && nomValid) {
     const formData = new FormData(event.target);
     const jsonData = {};
     formData.forEach((value, key) => {
       jsonData[key] = value;
     });
+    console.log("jsonData:", jsonData);
 
     try {
       const response = await fetch("/api/auth/register", {
