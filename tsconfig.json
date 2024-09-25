@@ -9,6 +9,9 @@
     "skipLibCheck": true,            // Skip type checking of all node_modules
     "resolveJsonModule": true        // Allows importing JSON files
   },
-  "include": ["src"],                // Specify the root folder for TypeScript files
-  "exclude": ["node_modules"]
+ "include": [
+  "src/**/*",
+  "src/types/**/*.d.ts"  // Inclure tous les fichiers de type dans 'src/types'
+]
+,  "exclude": ["node_modules"]
 }
