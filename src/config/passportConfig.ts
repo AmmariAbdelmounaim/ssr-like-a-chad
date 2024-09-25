@@ -1,6 +1,6 @@
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { User, IUser } from '../models/User';
+import { User, IUser } from '../models/userModel';
 import bcrypt from 'bcryptjs';
 
 // Configuration de Passport avec la stratégie locale pour utiliser l'email
