@@ -5,13 +5,15 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authenticateAPIToken } from "../middlewares/authenticateAPIToken";
 import { authorizeRole } from "../middlewares/authorizeRole";
+import upload from '../config/s3';  // Importer la configuration pour 
+import { MulterRequest } from "../types/multerRequest";
+
 
 const apiRouter = Router();
 
 // POST route for registration
 apiRouter.post("/auth/register", async (req: Request, res: Response) => {
   const { username, password, email, role, agencyName } = req.body;
-  console.log("request body: ", req.body);
   if (!username || !password || !email || !role) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -20,9 +22,7 @@ apiRouter.post("/auth/register", async (req: Request, res: Response) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ error: "Username or email already exists" });
+      return res.status(400).json({ error: "Username or email already exists" });
     }
 
     // Create a new user
@@ -33,7 +33,6 @@ apiRouter.post("/auth/register", async (req: Request, res: Response) => {
       role,
       agencyName,
     });
-    // Save user to MongoDB
     await user.save();
 
     // Generate a JWT token
@@ -56,20 +55,14 @@ apiRouter.post("/auth/register", async (req: Request, res: Response) => {
 apiRouter.post("/auth/login", async (req, res) => {
   const { email, password } = req.body;
 
-  console.log("Login attempt by: ", email);
-
   const user = await User.findOne({ email });
   if (!user) {
-    console.log("User not found: ", email);
     return res.status(400).json({ message: "Utilisateur non trouvé" });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    console.log("Invalid password for email: ", email);
-    return res
-      .status(400)
-      .json({ message: "Cet email et mot de passe ne correspondent pas" });
+    return res.status(400).json({ message: "Cet email et mot de passe ne correspondent pas" });
   }
 
   const token = jwt.sign(
@@ -82,13 +75,11 @@ apiRouter.post("/auth/login", async (req, res) => {
 
   res.cookie("token", token, { httpOnly: true });
 
-  const role = user.role;
-  return res.status(200).json({ role });
+  return res.status(200).json({ role: user.role });
 });
 
 // For logout
 apiRouter.get("/logout", (req, res) => {
-  console.log("Logout attempt.");
   res.clearCookie("token");
   res.redirect("/auth/login");
 });
@@ -114,4 +105,45 @@ apiRouter.get(
     res.json({ message: "Access granted!", user: req.user });
   }
 );
+
+// Route POST pour uploader une image avec agentId et annonceId dans l'URL
+apiRouter.post('/upload', upload.single('image'), (req: Request, res: Response) => {
+  try {
+    // Cast to MulterRequest to ensure TypeScript knows about `file`
+    const customReq = req as unknown as MulterRequest;
+
+    // Récupérer agentId et annonceId depuis req.query
+    const agentId = req.query.agentId as string;
+    const annonceId = req.query.annonceId as string;
+
+    // Vérifier si tous les champs sont présents
+    if (!customReq.file || !agentId || !annonceId) {
+      return res.status(400).json({ message: 'Image, agentId ou annonceId manquant' });
+    }
+
+
+    // Construire le chemin de stockage sur S3
+    const fileLocation = customReq.file.location;
+    const imagePath = `${agentId}/${annonceId}/${customReq.file.originalname}`;  // Organiser les fichiers dans S3
+
+    // Générer l'URL publique de l'image sur S3
+    const imageUrl = `https://tpwebbucket.s3.${process.env.AWS_REGION}.amazonaws.com/${imagePath}`;
+
+    return res.status(201).json({
+      message: 'Image téléchargée avec succès!',
+      imageUrl: imageUrl,  // URL publique correcte de l'image sur S3
+      path: imagePath
+    });
+  } catch (error) {
+    console.error('Erreur lors du téléchargement de l\'image:', error);
+    return res.status(500).json({ error: 'Erreur interne du serveur' });
+  }
+});
+
+
+
+
+
+
+
 export default apiRouter;
