@@ -100,7 +100,7 @@ apiRouter.get("/protected", authenticateAPIToken, (req, res) => {
 apiRouter.get(
   "/agent",
   authenticateAPIToken,
-  authorizeRole("agent"),
+  authorizeRole(["agent"]),
   (req, res) => {
     res.json({ message: "Access granted!", user: req.user });
   }
@@ -109,7 +109,7 @@ apiRouter.get(
 apiRouter.get(
   "/user",
   authenticateAPIToken,
-  authorizeRole("user"),
+  authorizeRole(["user"]),
   (req, res) => {
     res.json({ message: "Access granted!", user: req.user });
   }
