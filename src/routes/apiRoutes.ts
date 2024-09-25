@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { Router } from "express";
-import { User } from "../models/userModel";
+import { IUser, User } from "../models/userModel";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { authenticateAPIToken } from "../middlewares/authenticateAPIToken";
 import { authorizeRole } from "../middlewares/authorizeRole";
+import { checkAgentAuthorization } from "../middlewares/checkAgentAuthorization";
 import upload from '../config/s3';  // Importer la configuration pour 
 import { MulterRequest } from "../types/multerRequest";
 
@@ -91,7 +92,7 @@ apiRouter.get("/protected", authenticateAPIToken, (req, res) => {
 apiRouter.get(
   "/agent",
   authenticateAPIToken,
-  authorizeRole(["agent"]),
+  authorizeRole(['agent']),
   (req, res) => {
     res.json({ message: "Access granted!", user: req.user });
   }
@@ -100,45 +101,47 @@ apiRouter.get(
 apiRouter.get(
   "/user",
   authenticateAPIToken,
-  authorizeRole(["user"]),
+  authorizeRole(['user']),
   (req, res) => {
     res.json({ message: "Access granted!", user: req.user });
   }
 );
 
 // Route POST pour uploader une image avec agentId et annonceId dans l'URL
-apiRouter.post('/upload', upload.single('image'), (req: Request, res: Response) => {
-  try {
-    // Cast to MulterRequest to ensure TypeScript knows about `file`
-    const customReq = req as unknown as MulterRequest;
+apiRouter.post(
+  '/upload',
+  authenticateAPIToken,  // Authentifie l'utilisateur
+  authorizeRole(['agent']),
+  checkAgentAuthorization, // Vérifie si l'utilisateur est autorisé à uploader pour l'agentId
+  upload.single('image'),  // Gérer l'upload de fichier
+  (req: Request, res: Response) => {
+    try {
+      const customReq = req as unknown as MulterRequest;
+      const agentId = req.query.agentId as string;
+      const annonceId = req.query.annonceId as string;
 
-    // Récupérer agentId et annonceId depuis req.query
-    const agentId = req.query.agentId as string;
-    const annonceId = req.query.annonceId as string;
+      if (!customReq.file || !agentId || !annonceId) {
+        return res.status(400).json({ message: 'Image, agentId ou annonceId manquant' });
+      }
 
-    // Vérifier si tous les champs sont présents
-    if (!customReq.file || !agentId || !annonceId) {
-      return res.status(400).json({ message: 'Image, agentId ou annonceId manquant' });
+      const fileLocation = customReq.file.location;
+      const imagePath = `${agentId}/${annonceId}/${customReq.file.originalname}`;
+      const imageUrl = `https://tpwebbucket.s3.${process.env.AWS_REGION}.amazonaws.com/${imagePath}`;
+
+      return res.status(201).json({
+        message: 'Image téléchargée avec succès!',
+        imageUrl: imageUrl,
+        path: imagePath
+      });
+    } catch (error) {
+      console.error('Erreur lors du téléchargement de l\'image:', error);
+      return res.status(500).json({ error: 'Erreur interne du serveur' });
     }
-
-
-    // Construire le chemin de stockage sur S3
-    const fileLocation = customReq.file.location;
-    const imagePath = `${agentId}/${annonceId}/${customReq.file.originalname}`;  // Organiser les fichiers dans S3
-
-    // Générer l'URL publique de l'image sur S3
-    const imageUrl = `https://tpwebbucket.s3.${process.env.AWS_REGION}.amazonaws.com/${imagePath}`;
-
-    return res.status(201).json({
-      message: 'Image téléchargée avec succès!',
-      imageUrl: imageUrl,  // URL publique correcte de l'image sur S3
-      path: imagePath
-    });
-  } catch (error) {
-    console.error('Erreur lors du téléchargement de l\'image:', error);
-    return res.status(500).json({ error: 'Erreur interne du serveur' });
   }
-});
+);
+
+
+
 
 
 
