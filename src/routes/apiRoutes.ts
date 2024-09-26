@@ -8,6 +8,8 @@ import { authorizeRole } from "../middlewares/authorizeRole";
 import { checkAgentAuthorization } from "../middlewares/checkAgentAuthorization";
 import upload from '../config/s3';  // Importer la configuration pour 
 import { MulterRequest } from "../types/multerRequest";
+import { PropertyListing } from "../models/propertyLisingModel";
+import extractUserFromCookie from "../middlewares/extractUserfromCookies";
 
 
 const apiRouter = Router();
@@ -135,6 +137,95 @@ apiRouter.post(
       });
     } catch (error) {
       console.error('Erreur lors du téléchargement de l\'image:', error);
+      return res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+  }
+);
+
+
+apiRouter.post(
+  '/property',
+  
+  async (req: Request, res: Response) => {
+    try {
+      const { title, propertyType, publicationStatus, propertyStatus, description, price, availabilityDate } = req.body;
+
+      if (!title || !propertyType || !publicationStatus || !propertyStatus || !description || !price || !availabilityDate) {
+        return res.status(400).json({ message: 'Tous les champs de la propriété sont requis' });
+      }
+
+      // Créer la propriété sans l'image
+      const newProperty = new PropertyListing({
+        title,
+        propertyType,
+        publicationStatus,
+        propertyStatus,
+        description,
+        price,
+        availabilityDate,
+        photos: [], // Pas d'image pour le moment
+      });
+
+      await newProperty.save();
+
+      return res.status(201).json({
+        message: 'Propriété créée avec succès sans image!',
+        property: newProperty,
+      });
+    } catch (error) {
+      console.error('Erreur lors de la création de la propriété:', error);
+      return res.status(500).json({ error: 'Erreur interne du serveur' });
+    }
+  }
+);
+
+
+apiRouter.post(
+  '/property/:propertyId/uploadImage',  // propertyId comme paramètre d'URL
+  extractUserFromCookie,
+  upload.single('image'),  // Gérer l'upload de fichier
+  async (req: Request, res: Response) => {
+    try {
+      const customReq = req as unknown as MulterRequest;
+      const propertyId = req.params.propertyId;  // Récupérer l'ID de la propriété depuis params
+
+      // Vérifiez que req.user est défini avant de récupérer agentId
+      const user = req.user as IUser;
+      if (!user || !user._id) {
+        return res.status(401).json({ message: "Utilisateur non authentifié" });
+      }
+      const agentId = user._id;  // Récupérer l'ID de l'utilisateur connecté depuis le middleware
+
+      if (!customReq.file) {
+        return res.status(400).json({ message: 'Image manquante' });
+      }
+
+      // Trouver l'annonce (property) à mettre à jour
+      const property = await PropertyListing.findById(propertyId);
+      if (!property) {
+        return res.status(404).json({ message: 'Annonce non trouvée' });
+      }
+
+      // URL de l'image uploadée
+      const imageUrl = customReq.file.location;
+
+      // Initialiser le tableau des photos si nécessaire
+      if (!property.photos) {
+        property.photos = []; // Initialiser le tableau s'il est undefined
+      }
+
+      // Ajouter l'URL de l'image à la liste des photos de l'annonce
+      property.photos.push(imageUrl);
+
+      // Sauvegarder l'annonce mise à jour avec l'image
+      await property.save();
+
+      return res.status(200).json({
+        message: 'Image ajoutée avec succès à l\'annonce!',
+        property,  // Retourner l'annonce mise à jour avec les photos
+      });
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout de l\'image à l\'annonce:', error);
       return res.status(500).json({ error: 'Erreur interne du serveur' });
     }
   }
