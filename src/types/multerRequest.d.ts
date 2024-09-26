@@ -5,7 +5,7 @@ import { File } from "multer";
 interface MulterRequest extends Request {
   params: {
     agentId: string;
-    annonceId: string;
+    propertyId: string;
   };
   file: {
     location: string;
