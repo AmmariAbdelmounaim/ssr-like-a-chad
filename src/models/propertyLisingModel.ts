@@ -10,6 +10,7 @@ export interface IPropertyListing extends Document {
   availabilityDate: Date;
   photos?: string[]; // Array of URL strings for the photos
   commentsCount: number;
+  agent: mongoose.Schema.Types.ObjectId; // Référence à l'agent
 }
 
 const propertyListingSchema = new mongoose.Schema({
@@ -30,6 +31,7 @@ const propertyListingSchema = new mongoose.Schema({
   availabilityDate: { type: Date, required: true },
   photos: { type: [String] }, // Array of URL strings for the photos
   commentsCount: { type: Number, default: 0 },
+  agent: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true } // Référence à l'agent
 });
 
 export const PropertyListing = mongoose.model<IPropertyListing>(
