@@ -37,7 +37,7 @@ async function validateListingForm(event) {
 
   // Validate title
   if (title.value.trim() === "") {
-    showError("title-error", "Title is required");
+    showError("title-error", "Le titre est requis");
     isTitleValid = false;
   } else {
     isTitleValid = true;
@@ -46,7 +46,7 @@ async function validateListingForm(event) {
 
   // Validate property type
   if (propertyType.value.trim() === "") {
-    showError("propertyType-error", "Property type is required");
+    showError("propertyType-error", "Le type de propriété est requis");
     isPropertyTypeValid = false;
   } else {
     isPropertyTypeValid = true;
@@ -55,7 +55,7 @@ async function validateListingForm(event) {
 
   // Validate publication status
   if (publicationStatus.value.trim() === "") {
-    showError("publicationStatus-error", "Publication status is required");
+    showError("publicationStatus-error", "Le statut de publication est requis");
     isPublicationStatusValid = false;
   } else {
     isPublicationStatusValid = true;
@@ -64,7 +64,7 @@ async function validateListingForm(event) {
 
   // Validate property status
   if (propertyStatus.value.trim() === "") {
-    showError("propertyStatus-error", "Property status is required");
+    showError("propertyStatus-error", "Le statut de la propriété est requis");
     isPropertyStatusValid = false;
   } else {
     isPropertyStatusValid = true;
@@ -73,7 +73,7 @@ async function validateListingForm(event) {
 
   // Validate description
   if (description.value.trim() === "") {
-    showError("description-error", "Description is required");
+    showError("description-error", "La description est requise");
     isDescriptionValid = false;
   } else {
     isDescriptionValid = true;
@@ -86,7 +86,7 @@ async function validateListingForm(event) {
     isNaN(price.value) ||
     Number(price.value) <= 0
   ) {
-    showError("price-error", "Valid price is required");
+    showError("price-error", "Un prix valide est requis");
     isPriceValid = false;
   } else {
     isPriceValid = true;
@@ -95,7 +95,7 @@ async function validateListingForm(event) {
 
   // Validate availability date
   if (availabilityDate.value.trim() === "") {
-    showError("availabilityDate-error", "Availability date is required");
+    showError("availabilityDate-error", "La date de disponibilité est requise");
     isAvailabilityDateValid = false;
   } else {
     isAvailabilityDateValid = true;
