@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="/styles/styles.css" rel="stylesheet" />
-  <title>Agent Dashboard</title>
+  <title>Tableau de Bord de l'Agent</title>
 </head>
 <div class="min-h-screen bg-gray-100" data-id="1">
   <%- include('partials/navbar') %>
@@ -13,40 +13,42 @@
     <div class="max-w-7xl mx-auto" data-id="19">
       <div class="flex justify-between">
         <h1 class="text-2xl font-semibold text-gray-900 mb-6" data-id="20">
-          Property Listings
+          Annonces Immobilières
         </h1>
         <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
-          Publish an Article
+          Ajouter une nouvelle annonce
         </button>
       </div>
 
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" data-id="21">
-        <% propertyListing.forEach(function(listing) { %>
-        <%- include('partials/card', { listing:listing }); %>
-        <% }); %>
-        <div class="rounded-lg border bg-card text-card-foreground shadow-sm flex items-center justify-center min-h-[24rem]" data-id="43" data-v0-t="card">
-          <button class="whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md w-full h-full p-8 flex flex-col items-center justify-center" data-id="44">
+        <% propertyListing.forEach(function(listing) { %> <%- 
+          include('partials/card', { listing:listing }); %> <% }); %>
+        <a href="/dashboard/new-listing" class="rounded-lg border bg-card text-card-foreground shadow-sm flex items-center justify-center min-h-[24rem]">
+          <button class="whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground rounded-md w-full h-full p-8 flex flex-col items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-plus h-12 w-12 mb-2" data-id="45">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M8 12h8"></path>
               <path d="M12 8v8"></path>
             </svg>
-            <span data-id="46"> Add New Listing </span>
+            <span data-id="46"> Ajouter une nouvelle annonce </span>
           </button>
-        </div>
+        </a>
       </div>
     </div>
   </main>
 </div>
 <script>
   const agentName = "<%= agent.username %>";
-  const navName = document.getElementById("agentName")
+  const navName = document.getElementById("agentName");
 
   function getInitials(name) {
-    return name.split(" ").map(word => word[0].toUpperCase()).join("");
+    return name
+      .split(" ")
+      .map((word) => word[0].toUpperCase())
+      .join("");
   }
 
-  navName.textContent = `${getInitials(agentName)}`
+  navName.textContent = `${getInitials(agentName)}`;
 </script>
 
 </html>
