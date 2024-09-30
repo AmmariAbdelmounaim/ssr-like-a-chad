@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="/styles/styles.css" rel="stylesheet" />
+  <title>Ajouter des annonces</title>
+</head>
+<div class="min-h-screen bg-gray-100">
+  <%- include('partials/navbar') %>
+  <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
+    <form class="p-6 bg-card rounded-lg shadow space-y-8 max-w-7xl mx-auto" id="new-listing-form">
+      <h2 class="text-2xl font-bold mb-6">Ajouter une nouvelle annonce</h2>
+      <div class="space-y-2">
+        <label for="title" class="text-sm font-medium">Titre</label>
+        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="title" placeholder="Entrez le titre de la propriété" name="title" />
+        <p id="title-error" class="text-destructive text-sm hidden mt-2"></p>
+      </div>
+      <div class="space-y-2">
+        <label for="propertyType" class="text-sm font-medium">Type de propriété</label>
+        <div class="relative">
+          <select id="propertyType" name="propertyType" class="appearance-none flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+            <option value="">Sélectionnez le type de propriété</option>
+            <option value="sale">Vente</option>
+            <option value="rental">Location</option>
+          </select>
+          <p id="propertyType-error" class="text-destructive text-sm hidden mt-2"></p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 opacity-50 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label for="publicationStatus" class="text-sm font-medium">Statut de publication</label>
+        <div class="relative">
+          <select id="publicationStatus" name="publicationStatus" class="appearance-none flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+            <option value="">Sélectionnez le statut de publication</option>
+            <option value="published">Publié</option>
+            <option value="unpublished">Non publié</option>
+          </select>
+          <p id="publicationStatus-error" class="text-destructive text-sm hidden mt-2"></p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 opacity-50 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label for="propertyStatus" class="text-sm font-medium">Statut de la propriété</label>
+        <div class="relative">
+          <select id="propertyStatus" name="propertyStatus" class="appearance-none flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+            <option value="">Sélectionnez le statut de la propriété</option>
+            <option value="rented">Loué</option>
+            <option value="sold">Vendu</option>
+          </select>
+          <p id="propertyStatus-error" class="text-destructive text-sm hidden mt-2"></p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 opacity-50 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <path d="m6 9 6 6 6-6"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label for="description" class="text-sm font-medium">Description détaillée</label>
+        <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none" id="description" placeholder="Entrez une description détaillée de la propriété"></textarea>
+        <p id="description-error" class="text-destructive text-sm hidden mt-2"></p>
+      </div>
+      <div class="space-y-2">
+        <label for="price" class="text-sm font-medium">Prix</label>
+        <input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="price" name="price" placeholder="Entrez le prix" type="number" />
+        <p id="price-error" class="text-destructive text-sm hidden mt-2"></p>
+      </div>
+      <div class="space-y-2">
+        <label for="availabilityDate" class="text-sm font-medium">Date de disponibilité</label>
+        <div class="relative">
+          <input class="inline-flex items-center whitespace-nowrap rounded-md text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full justify-start text-left font-normal pl-10" id="availabilityDate" type="date" name="availabilityDate" />
+          <p id="availabilityDate-error" class="text-destructive text-sm hidden mt-2"></p>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar absolute left-3 top-[20px] transform -translate-y-1/2 h-4 w-4">
+            <path d="M8 2v4"></path>
+            <path d="M16 2v4"></path>
+            <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+            <path d="M3 10h18"></path>
+          </svg>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <label for="photos" class="text-sm font-medium">Photos</label>
+        <div id="dropzone" class="flex h-32 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 items-center justify-center cursor-pointer hover:bg-accent">
+          <span id="dropzone-text" class="text-muted-foreground">Glissez-déposez des images ici ou cliquez pour télécharger</span>
+          <input id="photos" name="photos" type="file" accept="image/*" multiple class="hidden" />
+        </div>
+        <div id="file-list" class="mt-2 space-y-2"></div>
+      </div>
+      <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full" type="submit">
+        Soumettre l'annonce
+      </button>
+    </form>
+  </main>
+</div>
+<style>
+    /* Hide the native date input icon */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+    input[type="date"]::-webkit-inner-spin-button {
+      display: none;
+    }
+    input[type="date"]::-webkit-clear-button {
+      display: none;
+    }
+</style>
+<script src="/js/new-listing.js"></script>
+<script>
+  const agentName = "<%= agent.username %>";
+  const navName = document.getElementById("agentName");
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('photos');
+  const fileList = document.getElementById('file-list');
+  const dropzoneText = document.getElementById('dropzone-text');
+
+  dropzone.addEventListener('click', () => fileInput.click());
+
+  dropzone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropzone.classList.add('bg-accent');
+  });
+
+  dropzone.addEventListener('dragleave', () => {
+    dropzone.classList.remove('bg-accent');
+  });
+
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('bg-accent');
+    fileInput.files = e.dataTransfer.files;
+    updateFileList(fileInput.files);
+  });
+
+  fileInput.addEventListener('change', () => {
+    updateFileList(fileInput.files);
+  });
+
+  function updateFileList(files) {
+    fileList.innerHTML = '';
+    Array.from(files).forEach(file => {
+      const fileItem = document.createElement('div');
+      fileItem.classList.add('flex', 'items-center', 'space-x-2');
+      const fileName = document.createElement('span');
+      fileName.textContent = file.name;
+      fileItem.appendChild(fileName);
+      fileList.appendChild(fileItem);
+    });
+  }
+
+  function getInitials(name) {
+    return name
+      .split(" ")
+      .map((word) => word[0].toUpperCase())
+      .join("");
+  }
+
+  navName.textContent = `${getInitials(agentName)}`;
+</script>
+
+</html>
