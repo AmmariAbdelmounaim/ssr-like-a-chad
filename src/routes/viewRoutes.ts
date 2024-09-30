@@ -30,6 +30,18 @@ viewRouter.get(
 );
 
 viewRouter.get(
+  "/dashboard/new-listing",
+  authenticateViewToken,
+  authorizeRole(["agent"]),
+  (req: Request, res: Response) => {
+    const loggedInAgent = req.user;
+    res.render("protected/agent/new-listing", {
+      agent: loggedInAgent,
+    });
+  }
+);
+
+viewRouter.get(
   "/annonce",
   authenticateViewToken,
   authorizeRole(["user"]),
