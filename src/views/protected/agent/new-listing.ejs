@@ -52,6 +52,7 @@
             <option value="">Sélectionnez le statut de la propriété</option>
             <option value="rented">Loué</option>
             <option value="sold">Vendu</option>
+            <option value="available">Disponible</option>
           </select>
           <p id="propertyStatus-error" class="text-destructive text-sm hidden mt-2"></p>
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down h-4 w-4 opacity-50 absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none" aria-hidden="true">
@@ -61,7 +62,7 @@
       </div>
       <div class="space-y-2">
         <label for="description" class="text-sm font-medium">Description détaillée</label>
-        <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none" id="description" placeholder="Entrez une description détaillée de la propriété"></textarea>
+        <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none" name="description" id="description" placeholder="Entrez une description détaillée de la propriété"></textarea>
         <p id="description-error" class="text-destructive text-sm hidden mt-2"></p>
       </div>
       <div class="space-y-2">
@@ -90,7 +91,7 @@
         </div>
         <div id="file-list" class="mt-2 space-y-2"></div>
       </div>
-      <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full" type="submit">
+      <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2" type="submit">
         Soumettre l'annonce
       </button>
     </form>
@@ -112,44 +113,6 @@
 <script>
   const agentName = "<%= agent.username %>";
   const navName = document.getElementById("agentName");
-  const dropzone = document.getElementById('dropzone');
-  const fileInput = document.getElementById('photos');
-  const fileList = document.getElementById('file-list');
-  const dropzoneText = document.getElementById('dropzone-text');
-
-  dropzone.addEventListener('click', () => fileInput.click());
-
-  dropzone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropzone.classList.add('bg-accent');
-  });
-
-  dropzone.addEventListener('dragleave', () => {
-    dropzone.classList.remove('bg-accent');
-  });
-
-  dropzone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropzone.classList.remove('bg-accent');
-    fileInput.files = e.dataTransfer.files;
-    updateFileList(fileInput.files);
-  });
-
-  fileInput.addEventListener('change', () => {
-    updateFileList(fileInput.files);
-  });
-
-  function updateFileList(files) {
-    fileList.innerHTML = '';
-    Array.from(files).forEach(file => {
-      const fileItem = document.createElement('div');
-      fileItem.classList.add('flex', 'items-center', 'space-x-2');
-      const fileName = document.createElement('span');
-      fileName.textContent = file.name;
-      fileItem.appendChild(fileName);
-      fileList.appendChild(fileItem);
-    });
-  }
 
   function getInitials(name) {
     return name
@@ -160,5 +123,4 @@
 
   navName.textContent = `${getInitials(agentName)}`;
 </script>
-
 </html>

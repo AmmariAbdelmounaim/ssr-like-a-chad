@@ -10,7 +10,7 @@ export const authenticateAPIToken = (
     if (err || !user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
-    req.user = user; // Attach user to request
+    req.user = user; 
     next();
   })(req, res, next);
 };
