@@ -91,36 +91,6 @@ export const createProperty = async (req: Request, res: Response) => {
   }
 };
 
-export const uploadPropertyImage = async (req: Request, res: Response) => {
-    try {
-      const propertyId = req.params.propertyId;
-  
-      const property = await PropertyListing.findById(propertyId);
-      if (!property) {
-        return res.status(404).json({ message: 'Annonce non trouvée.' });
-      }
-      const multerReq = req as unknown as MulterRequest; // Cast req to MulterRequest
-      const imageUrl:string = multerReq.file.location;
-  
-      // Vérifiez si 'photos' est undefined et l'initialiser si nécessaire
-      if (!property.photos) {
-        property.photos = [];
-      }
-  
-      // Ajouter l'URL de l'image à la liste des photos de l'annonce
-      property.photos.push(imageUrl);
-      
-      // Sauvegarder la propriété mise à jour
-      await property.save();
-  
-      return res.status(200).json({ message: 'Image ajoutée avec succès.', property });
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'image:', error);
-      return res.status(500).json({ error: 'Erreur interne du serveur.' });
-    }
-  };
-  
-
 export const getAllProperties = async (req: Request, res: Response) => {
   try {
     const properties = await PropertyListing.find({ publicationStatus: 'Publié' });

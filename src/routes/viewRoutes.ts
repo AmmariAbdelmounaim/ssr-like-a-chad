@@ -1,7 +1,9 @@
 import { Request, Response, Router } from "express";
 import { cookieAuthentication } from "../middlewares/cookieAuthentication";
 import { authorizeRole } from "../middlewares/authorizeRole";
-import { propertyListings } from "../const";
+import { getAgentProperties } from "../services/apiServices";
+import { PropertyListing } from "../models/propertyLisingModel";
+import { IUser } from "../models/userModel";
 const viewRouter = Router();
 
 viewRouter.get("/", (req, res) => {
@@ -20,8 +22,10 @@ viewRouter.get(
   "/dashboard",
   cookieAuthentication,
   authorizeRole(["agent"]),
-  (req: Request, res: Response) => {
-    const loggedInAgent = req.user;
+  async (req: Request, res: Response) => {
+    const loggedInAgent = req.user as IUser;
+    const propertyListings =await PropertyListing.find({ agent: loggedInAgent._id }); 
+    
     res.render("protected/agent/dashboard", {
       agent: loggedInAgent,
       propertyListing: propertyListings,
