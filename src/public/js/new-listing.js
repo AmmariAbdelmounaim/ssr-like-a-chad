@@ -1,3 +1,44 @@
+// logic for dropzone
+const dropzone = document.getElementById("dropzone");
+const fileInput = document.getElementById("photos");
+const fileList = document.getElementById("file-list");
+const dropzoneText = document.getElementById("dropzone-text");
+
+dropzone.addEventListener("click", () => fileInput.click());
+
+dropzone.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropzone.classList.add("bg-accent");
+});
+
+dropzone.addEventListener("dragleave", () => {
+  dropzone.classList.remove("bg-accent");
+});
+
+dropzone.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropzone.classList.remove("bg-accent");
+  fileInput.files = e.dataTransfer.files;
+  updateFileList(fileInput.files);
+});
+
+fileInput.addEventListener("change", () => {
+  updateFileList(fileInput.files);
+});
+
+function updateFileList(files) {
+  fileList.innerHTML = "";
+  Array.from(files).forEach((file) => {
+    const fileItem = document.createElement("div");
+    fileItem.classList.add("flex", "items-center", "space-x-2");
+    const fileName = document.createElement("span");
+    fileName.textContent = file.name;
+    fileItem.appendChild(fileName);
+    fileList.appendChild(fileItem);
+  });
+}
+
+
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("new-listing-form");
   form.addEventListener("submit", validateListingForm);
@@ -113,39 +154,59 @@ async function validateListingForm(event) {
   ) {
     const formData = new FormData(event.target);
     const jsonData = {};
+    const imgData = []
     for (let [key, value] of formData.entries()) {
       if (key === "photos") {
-        // Initialize the array if it doesn't exist
-        if (!jsonData[key]) {
-          jsonData[key] = [];
-        }
-        jsonData[key].push(value);
+        imgData.push(value);
       } else {
         jsonData[key] = value;
       }
     }
-
     console.log(jsonData);
-    //   try {
-    //     const response = await fetch("/api/listings", {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(jsonData),
-    //     });
 
-    //     const data = await response.json();
+      try {
+        const addPropertyResponse = await fetch("/api/property", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: 'include',
+          body: JSON.stringify(jsonData),
+        });
 
-    //     if (data.success) {
-    //       window.location.href = "/listings";
-    //     } else {
-    //       alert("Error submitting listing");
-    //     }
-    //   } catch (error) {
-    //     error.classList.remove("hidden");
-    //     error.classList.add("flex");
-    //     error.textContent = "Server error";
-    //   }
+        const data = await addPropertyResponse.json();
+        console.log(data)
+        if (data.property) {
+          if(imgData.length > 0){
+            // upload request
+            const addedProperty = data.property;
+            const url = `/api/property/${addedProperty._id}/uploadImage`;
+            
+            for (let i = 0; i < imgData.length; i++) {
+              const formData = new FormData();
+              formData.append('image', imgData[i]);
+              
+              try {
+                const uploadProprtyImgResponse = await fetch(url, {
+                  method: "POST",
+                  credentials: 'include',
+                  body: formData,
+                });
+                console.log(uploadProprtyImgResponse)
+              } catch (error) {
+                alert("Error uploading image");
+                break; // Exit the loop if an error occurs
+              }
+            }
+          }
+          // window.location.href = "/dashboard";
+        } else {
+          alert("Error submitting listing");
+        }
+      } catch (error) {
+        error.classList.remove("hidden");
+        error.classList.add("flex");
+        error.textContent = "Server error";
+      }
   }
 }

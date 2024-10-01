@@ -2,9 +2,9 @@ import mongoose, { Document } from "mongoose";
 
 export interface IPropertyListing extends Document {
   title: string;
-  propertyType: "Vente" | "Location";
-  publicationStatus: "Publié" | "Non Publié";
-  propertyStatus: "Disponible" | "Loué" | "Vendu";
+  propertyType: "sale" | "rental";
+  publicationStatus: "published" | "unpublished";
+  propertyStatus: "rented" | "sold" | "available" ;
   description: string;
   price: number;
   availabilityDate: Date;
@@ -15,15 +15,15 @@ export interface IPropertyListing extends Document {
 
 const propertyListingSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  propertyType: { type: String, enum: ["Vente", "Location"], required: true },
+  propertyType: { type: String, enum: ["sale", "rental"], required: true },
   publicationStatus: {
     type: String,
-    enum: ["Publié", "Non Publié"],
+    enum: ["published", "unpublished"],
     required: true,
   },
   propertyStatus: {
     type: String,
-    enum: ["Disponible", "Loué", "Vendu"],
+    enum: ["available", "rented", "sold"],
     required: true,
   },
   description: { type: String, required: true },
