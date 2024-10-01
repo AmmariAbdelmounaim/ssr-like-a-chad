@@ -1,8 +1,7 @@
 import { Router } from "express";
 import { authenticateAPIToken } from "../middlewares/authenticateAPIToken";
 import { authorizeRole } from "../middlewares/authorizeRole";
-import extractUserFromCookie from "../middlewares/extractUserfromCookies"; // Extraction de l'utilisateur à partir du cookie
-import upload from '../config/s3'; // Configuration pour l'upload d'images vers S3
+import {upload} from '../config/s3'; // Configuration pour l'upload d'images vers S3
 import * as apiServices from '../services/apiServices'; // Import des services
 
 const apiRouter = Router();
@@ -21,7 +20,7 @@ apiRouter.get("/logout", apiServices.logoutUser);
 // -------------------- PROPERTY ROUTES --------------------
 
 // Création d'une propriété (uniquement accessible aux agents)
-apiRouter.post('/property', extractUserFromCookie, authorizeRole(['agent']), apiServices.createProperty);
+apiRouter.post('/property', authorizeRole(['agent']), apiServices.createProperty);
 
 // Upload d'une image pour une propriété (accessible aux agents)
 apiRouter.post('/property/:propertyId/uploadImage', upload.single('image'), apiServices.uploadPropertyImage);
@@ -30,13 +29,13 @@ apiRouter.post('/property/:propertyId/uploadImage', upload.single('image'), apiS
 apiRouter.get('/properties', apiServices.getAllProperties);
 
 // Récupérer les propriétés d'un agent (accessible uniquement aux agents)
-apiRouter.get('/agent/properties', authenticateAPIToken, authorizeRole(['agent']), extractUserFromCookie, apiServices.getAgentProperties);
+apiRouter.get('/agent/properties', authenticateAPIToken, authorizeRole(['agent']), apiServices.getAgentProperties);
 
 // Mettre à jour une propriété (uniquement accessible aux agents)
-apiRouter.put('/property/:propertyId', extractUserFromCookie, authenticateAPIToken, authorizeRole(['agent']), apiServices.updateProperty);
+apiRouter.put('/property/:propertyId', authenticateAPIToken, authorizeRole(['agent']), apiServices.updateProperty);
 
 // Supprimer une propriété (uniquement accessible aux agents)
-apiRouter.delete('/property/:propertyId', extractUserFromCookie, authenticateAPIToken, authorizeRole(['agent']), apiServices.deleteProperty);
+apiRouter.delete('/property/:propertyId', authenticateAPIToken, authorizeRole(['agent']), apiServices.deletePropertyWithImages);
 
 // -------------------- COMMENT ROUTES --------------------
 
