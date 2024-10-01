@@ -4,8 +4,12 @@ import jwt from "jsonwebtoken";
 import { IUser, User } from "../models/userModel";
 import { PropertyListing } from "../models/propertyLisingModel";
 import { MulterRequest } from "../types/multerRequest";
+import { Comment } from '../models/commentModel';
+import mongoose from "mongoose";
 
-// Service pour l'enregistrement d'un utilisateur
+// -------------------- AUTHENTICATION SERVICES --------------------
+
+// Enregistrement d'un utilisateur
 export const registerUser = async (req: Request, res: Response) => {
   const { username, password, email, role, agencyName } = req.body;
   if (!username || !password || !email || !role) {
@@ -32,7 +36,7 @@ export const registerUser = async (req: Request, res: Response) => {
   }
 };
 
-// Service pour la connexion d'un utilisateur
+// Connexion d'un utilisateur
 export const loginUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -60,13 +64,15 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 };
 
-// Service pour déconnexion
+// Déconnexion
 export const logoutUser = (req: Request, res: Response) => {
   res.clearCookie("token");
   return res.status(200).json({ message: "Déconnexion réussie." });
 };
 
-// Services pour les propriétés
+// -------------------- PROPERTY SERVICES --------------------
+
+// Création d'une propriété
 export const createProperty = async (req: Request, res: Response) => {
   try {
     const { title, propertyType, publicationStatus, propertyStatus, description, price, availabilityDate } = req.body;
@@ -84,38 +90,7 @@ export const createProperty = async (req: Request, res: Response) => {
   }
 };
 
-export const uploadPropertyImage = async (req: Request, res: Response) => {
-    try {
-      const customReq = req as unknown as MulterRequest;
-      const propertyId = req.params.propertyId;
-      const user = req.user as IUser;
-  
-      const property = await PropertyListing.findById(propertyId);
-      if (!property) {
-        return res.status(404).json({ message: 'Annonce non trouvée.' });
-      }
-  
-      const imageUrl = customReq.file.location;
-  
-      // Vérifiez si 'photos' est undefined et l'initialiser si nécessaire
-      if (!property.photos) {
-        property.photos = [];
-      }
-  
-      // Ajouter l'URL de l'image à la liste des photos de l'annonce
-      property.photos.push(imageUrl);
-      
-      // Sauvegarder la propriété mise à jour
-      await property.save();
-  
-      return res.status(200).json({ message: 'Image ajoutée avec succès.', property });
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'image:', error);
-      return res.status(500).json({ error: 'Erreur interne du serveur.' });
-    }
-  };
-  
-
+// Récupérer toutes les propriétés publiées
 export const getAllProperties = async (req: Request, res: Response) => {
   try {
     const properties = await PropertyListing.find({ publicationStatus: 'Publié' });
@@ -129,6 +104,7 @@ export const getAllProperties = async (req: Request, res: Response) => {
   }
 };
 
+// Récupérer les propriétés d'un agent
 export const getAgentProperties = async (req: Request, res: Response) => {
   try {
     const user = req.user as IUser;
@@ -145,6 +121,7 @@ export const getAgentProperties = async (req: Request, res: Response) => {
   }
 };
 
+// Mise à jour d'une propriété
 export const updateProperty = async (req: Request, res: Response) => {
   try {
     const propertyId = req.params.propertyId;
@@ -168,6 +145,7 @@ export const updateProperty = async (req: Request, res: Response) => {
   }
 };
 
+// Suppression d'une propriété
 export const deleteProperty = async (req: Request, res: Response) => {
   try {
     const propertyId = req.params.propertyId;
@@ -183,5 +161,189 @@ export const deleteProperty = async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Erreur lors de la suppression de la propriété:', error);
     return res.status(500).json({ error: 'Erreur interne du serveur.' });
+  }
+};
+
+// -------------------- IMAGE UPLOAD SERVICE --------------------
+
+// Upload d'image pour une propriété
+export const uploadPropertyImage = async (req: Request, res: Response) => {
+  try {
+    const customReq = req as unknown as MulterRequest;
+    const propertyId = req.params.propertyId;
+    const user = req.user as IUser;
+
+    const property = await PropertyListing.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: 'Annonce non trouvée.' });
+    }
+
+    const imageUrl = customReq.file.location;
+
+    // Vérifiez si 'photos' est undefined et l'initialiser si nécessaire
+    if (!property.photos) {
+      property.photos = [];
+    }
+
+    // Ajouter l'URL de l'image à la liste des photos de l'annonce
+    property.photos.push(imageUrl);
+    
+    // Sauvegarder la propriété mise à jour
+    await property.save();
+
+    return res.status(200).json({ message: 'Image ajoutée avec succès.', property });
+  } catch (error) {
+    console.error('Erreur lors de l\'ajout de l\'image:', error);
+    return res.status(500).json({ error: 'Erreur interne du serveur.' });
+  }
+};
+
+// -------------------- COMMENT SERVICES --------------------
+
+// Ajouter un commentaire à une annonce
+export const addComment = async (req: Request, res: Response) => {
+  try {
+    const { propertyId } = req.params;
+    const { text } = req.body;
+    const user = req.user as IUser;
+
+    const property = await PropertyListing.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: 'Annonce non trouvée' });
+    }
+
+    const newComment = new Comment({
+      text,
+      author: user._id,
+      property: property._id,
+    });
+
+    await newComment.save();
+    res.status(201).json(newComment);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de l\'ajout du commentaire', error });
+  }
+};
+
+// Récupérer les commentaires associés à une annonce
+export const getCommentsForProperty = async (req: Request, res: Response) => {
+  try {
+    const { propertyId } = req.params;
+
+    const property = await PropertyListing.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: 'Annonce non trouvée' });
+    }
+
+    const comments = await Comment.find({ property: property._id })
+      .populate('author', 'username')
+      .populate('responses')
+      .exec();
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la récupération des commentaires', error });
+  }
+};
+
+// Supprimer un commentaire
+export const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const user = req.user as IUser;
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    const userId = new mongoose.Types.ObjectId(user._id);
+
+    if (comment.author.toString() !== userId.toString()) {
+      return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à supprimer ce commentaire.' });
+    }
+
+    await comment.deleteOne();
+    res.status(200).json({ message: 'Commentaire supprimé avec succès.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la suppression du commentaire', error });
+  }
+};
+
+// Répondre à un commentaire existant
+export const replyToComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const { text } = req.body;
+    const user = req.user as IUser;
+
+    const originalComment = await Comment.findById(commentId);
+    if (!originalComment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    const replyComment = new Comment({
+      text,
+      author: user._id,
+      property: originalComment.property
+    });
+
+    await replyComment.save();
+
+    if (!originalComment.responses) {
+      originalComment.responses = [];
+    }
+
+    originalComment.responses.push(replyComment._id as unknown as mongoose.Schema.Types.ObjectId);
+    await originalComment.save();
+
+    res.status(201).json(replyComment);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la réponse au commentaire', error });
+  }
+};
+
+// Mettre à jour un commentaire
+export const updateComment = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+    const { text } = req.body;
+    const user = req.user as IUser;
+
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    if (comment.author.toString() !== user._id.toString()) {
+      return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à modifier ce commentaire.' });
+    }
+
+    comment.text = text;
+    await comment.save();
+
+    res.status(200).json(comment);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la mise à jour du commentaire', error });
+  }
+};
+
+// Récupérer un commentaire avec ses réponses
+export const getCommentWithReplies = async (req: Request, res: Response) => {
+  try {
+    const { commentId } = req.params;
+
+    const comment = await Comment.findById(commentId)
+      .populate('author', 'username')
+      .populate('responses')
+      .exec();
+
+    if (!comment) {
+      return res.status(404).json({ message: 'Commentaire non trouvé' });
+    }
+
+    res.status(200).json(comment);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la récupération du commentaire', error });
   }
 };
