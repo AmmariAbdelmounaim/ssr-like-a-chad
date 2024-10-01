@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express";
-import { authenticateViewToken } from "../middlewares/authenticateViewToken";
+import { cookieAuthentication } from "../middlewares/cookieAuthentication";
 import { authorizeRole } from "../middlewares/authorizeRole";
 import { propertyListings } from "../const";
 const viewRouter = Router();
@@ -18,7 +18,7 @@ viewRouter.get("/auth/register", (req, res) => {
 
 viewRouter.get(
   "/dashboard",
-  authenticateViewToken,
+  cookieAuthentication,
   authorizeRole(["agent"]),
   (req: Request, res: Response) => {
     const loggedInAgent = req.user;
@@ -31,7 +31,7 @@ viewRouter.get(
 
 viewRouter.get(
   "/dashboard/new-listing",
-  authenticateViewToken,
+  cookieAuthentication,
   authorizeRole(["agent"]),
   (req: Request, res: Response) => {
     const loggedInAgent = req.user;
@@ -43,7 +43,7 @@ viewRouter.get(
 
 viewRouter.get(
   "/annonce",
-  authenticateViewToken,
+  cookieAuthentication,
   authorizeRole(["user"]),
   (req: Request, res: Response) => {
     const loggedInUser = req.user;

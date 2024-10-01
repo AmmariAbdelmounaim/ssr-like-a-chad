@@ -9,7 +9,7 @@ export const propertyListings = [
     price: 250000,
     availabilityDate: new Date("2024-10-15"),
     photos: [
-      "https://t4.ftcdn.net/jpg/03/70/64/43/360_F_370644357_MDF4UXLAXTyyi2OyuK66tWW9cA2f8svL.jpg",
+      "https://tpwebbucket.s3.us-east-1.amazonaws.com/66f408600ba5b45597f3b51b/66fab591a14991006f09ce24/1727707467950-download.png",
       "https://example.com/images/property1.jpg",
       "https://example.com/images/property2.jpg",
       "https://example.com/images/property3.jpg",

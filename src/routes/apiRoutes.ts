@@ -1,25 +1,63 @@
 import { Router } from "express";
-import { authenticateAPIToken } from "../middlewares/authenticateAPIToken";
 import { authorizeRole } from "../middlewares/authorizeRole";
-import { checkAgentAuthorization } from "../middlewares/checkAgentAuthorization";
-import extractUserFromCookie from "../middlewares/extractUserfromCookies";
-import upload from '../config/s3';
-import * as apiServices from '../services/apiServices';
+import upload from "../config/s3";
+import {
+  loginUser,
+  registerUser,
+  logoutUser,
+  createProperty,
+  getAllProperties,
+  getAgentProperties,
+  updateProperty,
+  deleteProperty,
+  uploadPropertyImage,
+} from "../services/apiServices";
+import { cookieAuthentication } from "../middlewares/cookieAuthentication";
 
 const apiRouter = Router();
 
 // Routes d'authentification
-apiRouter.post("/auth/register", apiServices.registerUser);
-apiRouter.post("/auth/login", apiServices.loginUser);
-apiRouter.get("/logout", apiServices.logoutUser);
-
+apiRouter.post("/auth/register", registerUser);
+apiRouter.post("/auth/login", loginUser);
+apiRouter.get("/logout", logoutUser);
 
 // Routes pour gérer les propriétés
-apiRouter.post('/property', extractUserFromCookie, authorizeRole(['agent']), apiServices.createProperty);
-apiRouter.post('/property/:propertyId/uploadImage', upload.single('image'), apiServices.uploadPropertyImage);
-apiRouter.get('/properties', apiServices.getAllProperties);
-apiRouter.get('/agent/properties', authenticateAPIToken, authorizeRole(['agent']), extractUserFromCookie, apiServices.getAgentProperties);
-apiRouter.put('/property/:propertyId', extractUserFromCookie, authenticateAPIToken, authorizeRole(['agent']), apiServices.updateProperty);
-apiRouter.delete('/property/:propertyId', extractUserFromCookie, authenticateAPIToken, authorizeRole(['agent']), apiServices.deleteProperty);
+apiRouter.post(
+  "/property",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  createProperty
+);
+
+apiRouter.post(
+  "/property/:propertyId/uploadImage",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  upload.single("image"),
+  uploadPropertyImage
+);
+
+apiRouter.get("/properties", getAllProperties);
+
+apiRouter.get(
+  "/agent/properties",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  getAgentProperties
+);
+
+apiRouter.put(
+  "/property/:propertyId",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  updateProperty
+);
+
+apiRouter.delete(
+  "/property/:propertyId",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  deleteProperty
+);
 
 export default apiRouter;

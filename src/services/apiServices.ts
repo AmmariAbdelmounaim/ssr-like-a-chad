@@ -86,16 +86,14 @@ export const createProperty = async (req: Request, res: Response) => {
 
 export const uploadPropertyImage = async (req: Request, res: Response) => {
     try {
-      const customReq = req as unknown as MulterRequest;
       const propertyId = req.params.propertyId;
-      const user = req.user as IUser;
   
       const property = await PropertyListing.findById(propertyId);
       if (!property) {
         return res.status(404).json({ message: 'Annonce non trouvée.' });
       }
-  
-      const imageUrl = customReq.file.location;
+      const multerReq = req as unknown as MulterRequest; // Cast req to MulterRequest
+      const imageUrl:string = multerReq.file.location;
   
       // Vérifiez si 'photos' est undefined et l'initialiser si nécessaire
       if (!property.photos) {

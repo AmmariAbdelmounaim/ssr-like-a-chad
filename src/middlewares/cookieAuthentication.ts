@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
 
-export const authenticateViewToken = async (
+export const cookieAuthentication = async (
   req: Request,
   res: Response,
   next: NextFunction
