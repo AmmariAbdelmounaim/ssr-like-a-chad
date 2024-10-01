@@ -6,6 +6,7 @@ import { PropertyListing } from "../models/propertyLisingModel";
 import { MulterRequest } from "../types/multerRequest";
 import { Comment } from '../models/commentModel';
 import mongoose from "mongoose";
+import  { deleteImageFromS3 } from "../config/s3";
 
 // -------------------- AUTHENTICATION SERVICES --------------------
 
@@ -146,20 +147,40 @@ export const updateProperty = async (req: Request, res: Response) => {
 };
 
 // Suppression d'une propriété
-export const deleteProperty = async (req: Request, res: Response) => {
+
+export const deletePropertyWithImages = async (req: Request, res: Response) => {
   try {
     const propertyId = req.params.propertyId;
     const user = req.user as IUser;
 
-    const property = await PropertyListing.findOne({ _id: propertyId, agent: user._id });
+    // Trouver la propriété à supprimer
+    const property = await PropertyListing.findById(propertyId);
     if (!property) {
-      return res.status(404).json({ message: "Propriété non trouvée." });
+      return res.status(404).json({ message: 'Propriété non trouvée.' });
     }
 
+    // Si la propriété a des images associées
+    if (property.photos && property.photos.length > 0) {
+      for (const imageUrl of property.photos) {
+        const photoKey = imageUrl.split('/').pop(); // Extraire la clé de l'image depuis l'URL
+
+        // Vérifier si la clé existe avant d'envoyer la requête S3
+        if (!photoKey) {
+          console.error(`Erreur: Clé de l'image manquante pour l'image ${imageUrl}`);
+          continue; // Passer à l'image suivante si la clé est manquante
+        }
+
+        // Utiliser la fonction pour supprimer l'image de S3
+        await deleteImageFromS3(process.env.AWS_BUCKET_NAME!, `${user._id}/${propertyId}/${photoKey}`);
+      }
+    }
+
+    // Une fois les images supprimées, supprimer la propriété
     await PropertyListing.findByIdAndDelete(propertyId);
-    return res.status(200).json({ message: "Propriété supprimée avec succès." });
+
+    return res.status(200).json({ message: 'Propriété et images associées supprimées avec succès.' });
   } catch (error) {
-    console.error('Erreur lors de la suppression de la propriété:', error);
+    console.error('Erreur lors de la suppression de la propriété et des images:', error);
     return res.status(500).json({ error: 'Erreur interne du serveur.' });
   }
 };
