@@ -2,28 +2,28 @@ import mongoose, { Document } from "mongoose";
 
 export interface IPropertyListing extends Document {
   title: string;
-  propertyType: "sale" | "rental";
-  publicationStatus: "published" | "unpublished";
-  propertyStatus: "rented" | "sold" | "available" ;
+  propertyType: "vente" | "location";
+  publicationStatus: "publié" | "non publié";
+  propertyStatus: "loué" | "vendu" | "disponible" ;
   description: string;
   price: number;
   availabilityDate: Date;
-  photos?: string[]; // Array of URL strings for the photos
+  photos?: string[]; 
   commentsCount: number;
-  agent: mongoose.Schema.Types.ObjectId; // Référence à l'agent
+  agent: mongoose.Schema.Types.ObjectId; 
 }
 
 const propertyListingSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  propertyType: { type: String, enum: ["sale", "rental"], required: true },
+  propertyType: { type: String, enum: ["vente", "location"], required: true },
   publicationStatus: {
     type: String,
-    enum: ["published", "unpublished"],
+    enum: ["publié", "non publié"],
     required: true,
   },
   propertyStatus: {
     type: String,
-    enum: ["available", "rented", "sold"],
+    enum: ["loué", "vendu", "disponible"],
     required: true,
   },
   description: { type: String, required: true },

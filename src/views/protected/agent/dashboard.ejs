@@ -15,9 +15,9 @@
         <h1 class="text-2xl font-semibold text-gray-900 mb-6" data-id="20">
           Annonces Immobilières
         </h1>
-        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
+        <a href="/dashboard/new-listing" class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 h-10 px-4 py-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90">
           Ajouter une nouvelle annonce
-        </button>
+        </a>
       </div>
 
       <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" data-id="21">
@@ -37,18 +37,4 @@
     </div>
   </main>
 </div>
-<script>
-  const agentName = "<%= agent.username %>";
-  const navName = document.getElementById("agentName");
-
-  function getInitials(name) {
-    return name
-      .split(" ")
-      .map((word) => word[0].toUpperCase())
-      .join("");
-  }
-
-  navName.textContent = `${getInitials(agentName)}`;
-</script>
-
 </html>
