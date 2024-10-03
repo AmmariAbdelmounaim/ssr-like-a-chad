@@ -1,6 +1,7 @@
 import mongoose, { Document } from "mongoose";
 
 export interface IPropertyListing extends Document {
+  _id: mongoose.Schema.Types.ObjectId; // Explicitly declare _id
   title: string;
   propertyType: "vente" | "location";
   publicationStatus: "publié" | "non publié";

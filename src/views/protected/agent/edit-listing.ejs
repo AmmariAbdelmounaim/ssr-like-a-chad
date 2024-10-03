@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/styles/styles.css" rel="stylesheet" />
+    <title>Modifier une annonce</title>
+  </head>
+  <div class="min-h-screen bg-gray-100">
+    <%- include('partials/navbar') %>
+    <main class="pt-20 pb-8 px-4 sm:px-6 lg:px-8">
+        <%- include('partials/edit-listing-form') %>
+    </main>
+  </div>
+  <style>
+    /* Hide the native date input icon */
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      display: none;
+    }
+    input[type="date"]::-webkit-inner-spin-button {
+      display: none;
+    }
+    input[type="date"]::-webkit-clear-button {
+      display: none;
+    }
+  </style>
+  <script src="/js/edit-listing.js"></script>
+</html>

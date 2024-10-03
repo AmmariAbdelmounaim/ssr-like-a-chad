@@ -77,13 +77,28 @@ export const logoutUser = (req: Request, res: Response) => {
 export const createProperty = async (req: Request, res: Response) => {
   try {
     const { title, propertyType, publicationStatus, propertyStatus, description, price, availabilityDate } = req.body;
+    const customReq = req as unknown as MulterRequest; // Cast req to MulterRequest to access files
     const user = req.user as IUser;
-
+    
     const newProperty = new PropertyListing({
       title, propertyType, publicationStatus, propertyStatus, description, price, availabilityDate, agent: user._id
     });
 
+    // Save the property to generate an ID
     await newProperty.save();
+
+    console.log("saved Property id:",newProperty._id.toString())
+    // Attach the propertyId to the request object
+    customReq.params = { ...customReq.params, propertyId: newProperty._id.toString() };
+
+    // Handle multiple image uploads
+    const imageUrls = Array.isArray(customReq.files) 
+      ? customReq.files.map((file: any) => file.location) // Ensure files is an array and cast file to any if necessary
+      : [];
+    if (imageUrls.length > 0) {
+      newProperty.photos = imageUrls; // Directly assign imageUrls to photos
+    }
+
     return res.status(201).json({ message: 'Propriété créée avec succès.', property: newProperty });
   } catch (error) {
     console.error('Erreur lors de la création de la propriété:', error);
@@ -218,6 +233,43 @@ export const uploadPropertyImage = async (req: Request, res: Response) => {
   }
 };
 
+export const deletePropertyImage = async (req: Request, res: Response) => {
+  try {
+    const { propertyId, imageUrl } = req.params;
+    const user = req.user as IUser;
+
+    const property = await PropertyListing.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: 'Annonce non trouvée.' });
+    }
+
+    if(property.photos && property.photos?.length > 0){
+    // Check if the image exists in the property's photos
+      const imageIndex = property.photos.indexOf(imageUrl);
+      property.photos.splice(imageIndex, 1);
+
+    }else{
+      return res.status(404).json({ message: 'Image non trouvée.' });
+    }
+
+    // Extract the photo key from the URL
+    const photoKey = imageUrl.split('/').pop();
+    if (!photoKey) {
+      return res.status(400).json({ message: 'Clé de l\'image invalide.' });
+    }
+
+    // Delete the image from S3
+    await deleteImageFromS3(process.env.AWS_BUCKET_NAME!, `${user._id}/${propertyId}/${photoKey}`);
+
+    // Save the updated property
+    await property.save();
+
+    return res.status(200).json({ message: 'Image supprimée avec succès.', property });
+  } catch (error) {
+    console.error('Erreur lors de la suppression de l\'image:', error);
+    return res.status(500).json({ error: 'Erreur interne du serveur.' });
+  }
+};
 // -------------------- COMMENT SERVICES --------------------
 
 // Ajouter un commentaire à une annonce

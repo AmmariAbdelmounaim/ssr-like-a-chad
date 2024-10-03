@@ -17,6 +17,7 @@ import {
   replyToComment,
   updateComment,
   getCommentWithReplies,
+  deletePropertyImage,
 } from "../services/apiServices";
 import { cookieAuthentication } from "../middlewares/cookieAuthentication";
 
@@ -96,6 +97,13 @@ apiRouter.delete(
   deletePropertyWithImages
 );
 
+// Supprimer une image (uniquement accessible aux agents)
+apiRouter.delete(
+  `/property/:propertyId/image/:imageUrl`,
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  deletePropertyImage
+)
 // -------------------- COMMENT ROUTES --------------------
 
 // Ajouter un commentaire à une propriété (nécessite une authentification)
