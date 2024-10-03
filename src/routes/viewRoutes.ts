@@ -46,6 +46,26 @@ viewRouter.get(
 );
 
 viewRouter.get(
+  "/dashboard/edit-listing/:id",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  async (req: Request, res: Response) => {
+    const listingId = req.params.id;
+    const loggedInAgent = req.user as IUser;
+    const propertyListing = await PropertyListing.findOne({ _id: listingId, agent: loggedInAgent._id });
+
+    if (!propertyListing) {
+      return res.status(404).send("Property listing not found");
+    }
+
+    res.render("protected/agent/edit-listing", {
+      agent: loggedInAgent,
+      listing: propertyListing,
+    });
+  }
+);
+
+viewRouter.get(
   "/annonce",
   cookieAuthentication,
   authorizeRole(["user"]),

@@ -1,8 +1,7 @@
-// logic for dropzone
 const dropzone = document.getElementById("dropzone");
 const fileInput = document.getElementById("photos");
 const fileList = document.getElementById("file-list");
-
+const existingImages = document.getElementById("existing-images");
 dropzone.addEventListener("click", () => fileInput.click());
 
 dropzone.addEventListener("dragover", (e) => {
@@ -20,10 +19,7 @@ dropzone.addEventListener("drop", (e) => {
   fileInput.files = e.dataTransfer.files;
   updateFileList(fileInput.files);
 });
-
-fileInput.addEventListener("change", () => {
-  updateFileList(fileInput.files);
-});
+fileInput.addEventListener("change", () => updateFileList(fileInput.files));
 
 function updateFileList(files) {
   fileList.innerHTML = "";
@@ -38,9 +34,11 @@ function updateFileList(files) {
     removeButton.textContent = "X";
     removeButton.classList.add("text-red-500", "ml-2");
     removeButton.onclick = () => {
-      const newFiles = Array.from(fileInput.files).filter((_, i) => i !== index);
+      const newFiles = Array.from(fileInput.files).filter(
+        (_, i) => i !== index
+      );
       const dataTransfer = new DataTransfer();
-      newFiles.forEach(file => dataTransfer.items.add(file));
+      newFiles.forEach((file) => dataTransfer.items.add(file));
       fileInput.files = dataTransfer.files;
       updateFileList(fileInput.files);
     };
@@ -56,26 +54,105 @@ function updateFileList(files) {
   });
 }
 
-
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("new-listing-form");
-  form.addEventListener("submit", validateListingForm);
+// existingImages.addEventListener("click", function (event) {
+//   if (event.target.classList.contains("remove-existing-image")) {
+//     const imageDiv = event.target.closest("div");
+//     imageDiv.remove();
+//   }
+// });
+existingImages.addEventListener("click", function (event) {
+  if (event.target.classList.contains("remove-existing-image")) {
+    const imageDiv = event.target.closest("div");
+    if (imageDiv) {
+      imageDiv.classList.add("marked-for-removal", "hidden"); // Ensure both classes are added
+    }
+  }
 });
 
-// Function to show error messages
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("edit-listing-form");
+
+  form.addEventListener("submit", validateEditListingForm);
+});
+
 function showError(errorId, message) {
   const errorElement = document.getElementById(errorId);
   errorElement.textContent = message;
   errorElement.classList.remove("hidden");
 }
 
-// Function to hide error messages
 function hideError(errorId) {
   const errorElement = document.getElementById(errorId);
   errorElement.classList.add("hidden");
 }
 
-async function validateListingForm(event) {
+function updateFileList(files) {
+  fileList.innerHTML = ""; // Clear the current list
+  Array.from(files).forEach((file, index) => {
+    const fileItem = document.createElement("div");
+    fileItem.classList.add("flex", "items-center", "space-x-2");
+
+    const fileName = document.createElement("span");
+    fileName.textContent = file.name;
+
+    const removeButton = document.createElement("button");
+    removeButton.textContent = "X";
+    removeButton.classList.add("text-red-500", "ml-2");
+    removeButton.onclick = () => {
+      const dataTransfer = new DataTransfer();
+      Array.from(fileInput.files)
+        .filter((_, i) => i !== index)
+        .forEach((file) => dataTransfer.items.add(file));
+      fileInput.files = dataTransfer.files;
+      updateFileList(fileInput.files);
+    };
+
+    const imgPreview = document.createElement("img");
+    imgPreview.src = URL.createObjectURL(file);
+    imgPreview.classList.add("h-16", "w-16", "object-cover", "mr-2");
+
+    fileItem.appendChild(imgPreview);
+    fileItem.appendChild(fileName);
+    fileItem.appendChild(removeButton);
+    fileList.appendChild(fileItem);
+  });
+}
+
+async function handleImageUpload(propertyId, imgData) {
+  const url = `/api/property/${propertyId}/uploadImage`;
+  for (let i = 0; i < imgData.length; i++) {
+    const formData = new FormData();
+    formData.append("image", imgData[i]);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+      console.log(response);
+    } catch (error) {
+      alert("Error uploading image");
+      break; // Exit the loop if an error occurs
+    }
+  }
+}
+
+async function handleImageDeletion(propertyId, imageUrl) {
+  const url = `/api/property/${propertyId}/image/${encodeURIComponent(
+    imageUrl
+  )}`;
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    console.log(response);
+  } catch (error) {
+    alert("Error deleting image");
+  }
+}
+
+async function validateEditListingForm(event) {
   event.preventDefault();
   let isTitleValid = true;
   let isPropertyTypeValid = true;
@@ -172,7 +249,16 @@ async function validateListingForm(event) {
   ) {
     const formData = new FormData(event.target);
     const jsonData = {};
-    const imgData = []
+    const imgData = [];
+    const removedImages = [];
+   
+    document.querySelectorAll("#existing-images .marked-for-removal").forEach((div) => {
+      const img = div.querySelector("img");
+      if (img) {
+        removedImages.push(img.src); // Collect marked images
+      }
+    });
+
     for (let [key, value] of formData.entries()) {
       if (key === "photos") {
         imgData.push(value);
@@ -180,51 +266,41 @@ async function validateListingForm(event) {
         jsonData[key] = value;
       }
     }
-    console.log(jsonData);
 
-      try {
-        const addPropertyResponse = await fetch("/api/property", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: 'include',
-          body: JSON.stringify(jsonData),
-        });
+    // Filter out removed images from imgData
+    // imgData = imgData.filter((img) => !removedImages.includes(img));
 
-        const data = await addPropertyResponse.json();
-        console.log(data)
-        if (data.property) {
-          if(imgData.length > 0){
-            // upload request
-            const addedProperty = data.property;
-            const url = `/api/property/${addedProperty._id}/uploadImage`;
-            
-            for (let i = 0; i < imgData.length; i++) {
-              const formData = new FormData();
-              formData.append('image', imgData[i]);
-              
-              try {
-                const uploadProprtyImgResponse = await fetch(url, {
-                  method: "POST",
-                  credentials: 'include',
-                  body: formData,
-                });
-                console.log(uploadProprtyImgResponse)
-              } catch (error) {
-                alert("Error uploading image");
-                break; // Exit the loop if an error occurs
-              }
-            }
-          }
-          window.location.href = "/dashboard";
-        } else {
-          alert("Error submitting listing");
+    
+    try {
+      const listingId = window.location.pathname.split("/").pop();
+      // update listing properties
+      await fetch(`/api/property/${listingId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(jsonData),
+      });
+      console.log("removedImages.length: ",removedImages.length)
+      // delete images if there is a change
+      if (removedImages.length > 0) {
+        for (let i = 0; i < removedImages.length; i++) {
+          handleImageDeletion(listingId, removedImages[i]);
         }
-      } catch (error) {
-        error.classList.remove("hidden");
-        error.classList.add("flex");
-        error.textContent = "Server error";
       }
+      console.log("imgData.length: ",imgData.length)
+      // upload the new images
+      if (imgData.length > 0) {
+        for (let i = 0; i < imgData.length; i++) {
+          handleImageUpload(listingId, imgData);
+        }
+      }
+      // window.location.href = "/dashboard";
+    } catch (error) {
+      error.classList.remove("hidden");
+      error.classList.add("flex");
+      error.textContent = "Server error";
+    }
   }
 }
