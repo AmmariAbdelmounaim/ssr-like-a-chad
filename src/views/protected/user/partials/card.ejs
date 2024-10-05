@@ -1,0 +1,54 @@
+<div
+  class="rounded-lg border bg-card text-card-foreground shadow-sm flex flex-col"
+  data-id=<%=listing._id%>
+>
+  <a href="/listing-details/<%=listing._id%>">
+    <div class="flex flex-col space-y-1.5 px-6 pt-6">
+      <h3 class="text-2xl font-semibold leading-none">
+        <%=listing.title%>
+      </h3>
+      <div class="flex flex-wrap gap-2 mt-2">
+        <div
+          class="inline-flex w-fit items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 capitalize border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+        >
+          <%=listing.propertyType%>
+        </div>
+        <div
+          class="inline-flex w-fit items-center capitalize whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+        >
+          <%=listing.publicationStatus%>
+        </div>
+        <div
+          class="inline-flex w-fit items-center capitalize whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+        >
+          <%=listing.propertyStatus%>
+        </div>
+      </div>
+    </div>
+    <div class="p-6 flex-grow">
+      <p class="text-sm text-gray-600 mb-2 line-clamp-2">
+        <%=listing.description%>
+      </p>
+      <p class="font-semibold">$<%=listing.price%></p>
+      <p class="text-sm text-gray-500">
+        Disponible: <%= new
+        Date(listing.availabilityDate).toLocaleDateString('fr-FR', { day:
+        '2-digit', month: '2-digit', year: 'numeric' }) %>
+      </p>
+      <img
+      
+        src="<%=listing.photos[0]%>"
+        alt="Luxurious Beachfront Villa"
+        class="mt-4 rounded-md transition duration-300 object-cover w-full h-48"
+      />
+    </div>
+    <div class="p-6 flex justify-between items-center">
+      <span class="text-sm text-gray-500"
+        ><%=listing.commentsCount%> comments</span
+      >
+     
+    </div>
+  </a>  
+  
+</div>
+

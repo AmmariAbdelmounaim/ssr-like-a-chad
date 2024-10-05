@@ -26,7 +26,7 @@ const apiRouter = Router();
 // Routes d'authentification
 apiRouter.post("/auth/register", registerUser);
 apiRouter.post("/auth/login", loginUser);
-apiRouter.get("/logout", logoutUser);
+apiRouter.post("/logout", logoutUser);
 
 // Routes pour gérer les propriétés
 apiRouter.post(
