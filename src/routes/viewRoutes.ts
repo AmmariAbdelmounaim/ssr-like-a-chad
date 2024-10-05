@@ -56,7 +56,7 @@ viewRouter.get(
     const loggedInAgent = req.user as IUser;
     const propertyListing = await PropertyListing.findOne({
       _id: listingId,
-      user: loggedInAgent._id,
+      agent: loggedInAgent._id,
     });
 
     if (!propertyListing) {

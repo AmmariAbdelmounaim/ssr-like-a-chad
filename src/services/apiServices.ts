@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { IUser, User } from "../models/userModel";
-import { PropertyListing } from "../models/propertyLisingModel";
+import { IPropertyListing, PropertyListing } from "../models/propertyLisingModel";
 import { MulterRequest } from "../types/multerRequest";
 import { Comment } from '../models/commentModel';
 import mongoose from "mongoose";
@@ -311,6 +311,80 @@ export const getCommentsForProperty = async (req: Request, res: Response) => {
       .populate('author', 'username')
       .populate('responses')
       .exec();
+
+    res.status(200).json(comments);
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors de la récupération des commentaires', error });
+  }
+};
+
+// Récupérer uniquement les commentaire des "users" associés à une annonce
+export const getUserCommentsForProperty = async (req: Request, res: Response) => {
+  try {
+    const { propertyId } = req.params;
+
+    const property: IPropertyListing | null = await PropertyListing.findById(propertyId);
+    if (!property) {
+      return res.status(404).json({ message: 'Annonce non trouvée' });
+    }
+
+    const comments = await Comment.aggregate([
+      { $match: { property: new mongoose.Types.ObjectId(property._id.toString()) } },
+      {
+        $lookup: {
+          from: 'users', // The collection name for users
+          localField: 'author',
+          foreignField: '_id',
+          as: 'authorDetails'
+        }
+      },
+      { $unwind: '$authorDetails' },
+      { $match: { 'authorDetails.role': 'user' } },
+      {
+        $lookup: {
+          from: 'comments', // The collection name for comments
+          localField: 'responses',
+          foreignField: '_id',
+          as: 'populatedResponses'
+        }
+      },
+      {
+        $unwind: {
+          path: '$populatedResponses',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $lookup: {
+          from: 'users', // The collection name for users
+          localField: 'populatedResponses.author',
+          foreignField: '_id',
+          as: 'responseAuthorDetails'
+        }
+      },
+      {
+        $unwind: {
+          path: '$responseAuthorDetails',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $group: {
+          _id: '$_id',
+          text: { $first: '$text' },
+          createdAt: { $first: '$createdAt' },
+          author: { $first: { _id: '$authorDetails._id', username: '$authorDetails.username' } },
+          responses: {
+            $push: {
+              _id: '$populatedResponses._id',
+              text: '$populatedResponses.text',
+              createdAt: '$populatedResponses.createdAt',
+              author: { _id: '$responseAuthorDetails._id', username: '$responseAuthorDetails.username' }
+            }
+          }
+        }
+      }
+    ]);
 
     res.status(200).json(comments);
   } catch (error) {
