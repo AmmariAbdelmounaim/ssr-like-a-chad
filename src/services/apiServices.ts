@@ -108,7 +108,7 @@ export const createProperty = async (req: Request, res: Response) => {
 
 export const getAllProperties = async (req: Request, res: Response) => {
   try {
-    const properties = await PropertyListing.find({ publicationStatus: 'Publié' });
+    const properties = await PropertyListing.find({ publicationStatus: 'publié' });
     if (!properties.length) {
       return res.status(404).json({ message: 'Aucune propriété trouvée.' });
     }

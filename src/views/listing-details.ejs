@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/styles/styles.css" rel="stylesheet" />
+    <title>Tableau de Bord de l'Agent</title>
+</head>
+<div class="min-h-screen  bg-gray-100">
+    <%- include('protected/partials/navbar') %>
+        <div class="pt-4 pb-8 px-4 sm:px-6 lg:px-8">
+            <div class="rounded-lg border bg-card p-6 max-w-7xl mx-auto text-card-foreground shadow-sm overflow-hidden"
+                data-v0-t="card">
+                <div class="flex flex-col space-y-1.5 p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="whitespace-nowrap font-semibold tracking-tight text-2xl md:text-3xl mb-2">
+                                <%=listing.title%>
+                            </h3>
+                            <p class="text-muted-foreground text-lg">
+                            <div class="inline-flex w-fit capitalize items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground mr-2"
+                                data-v0-t="badge">
+                                <%=listing.propertyType%>
+                            </div>
+                            <div class="inline-flex w-fit capitalize items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground mr-2"
+                                data-v0-t="badge">
+                                <%=listing.publicationStatus%>
+                            </div>
+                            <div class="inline-flex w-fit capitalize items-center whitespace-nowrap rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-primary text-primary-foreground hover:bg-primary/80"
+                                data-v0-t="badge">
+                                <%=listing.propertyStatus%>
+                            </div>
+                            </p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl md:text-3xl font-bold">$ <%=listing.price%>
+                            </div>
+                            <div class="text-muted-foreground"><svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                    height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-calendar inline-block mr-1">
+                                    <path d="M8 2v4"></path>
+                                    <path d="M16 2v4"></path>
+                                    <rect width="18" height="18" x="3" y="4" rx="2"></rect>
+                                    <path d="M3 10h18"></path>
+                                </svg>
+                                <%= new Date(listing.availabilityDate).toLocaleDateString('fr-FR', { day:'2-digit',
+                                    month: '2-digit' , year: 'numeric' })%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                        <% listing.photos.forEach(function(photo) { %>
+                            <img alt="Property photo 1" width="600" height="400"
+                                class="rounded-lg object-cover w-full h-64" src="<%= photo %>"
+                                style="aspect-ratio: 600 / 400; object-fit: cover;">
+                            <% }); %>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Description</h3>
+                    <p class="text-muted-foreground">
+                        <%=listing.description%>
+                    </p>
+                    <h3 class="text-xl font-semibold my-4" data-id="19">Commentaires</h3>
+                <form class="space-y-4 mb-6" data-id="20">
+                        <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        placeholder="Ajouter un commentaire..." required="" data-id="22"></textarea><button
+                        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                        type="submit" data-id="23">Poster le commentaire</button></form>
+                <div class="mb-4" data-id="24">
+                    <div class="flex items-start space-x-4" data-id="25"><span
+                            class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="26"><span
+                                class="flex h-full w-full items-center justify-center rounded-full bg-muted"
+                                data-id="27">J</span></span>
+                        <div class="flex-1 space-y-1" data-id="28">
+                            <p class="text-sm font-medium" data-id="29">John Doe</p>
+                            <p class="text-sm text-muted-foreground" data-id="30">2023-05-15</p>
+                            <p class="text-sm" data-id="31">Cet appartement a l'air fantastique ! Est-il proche des
+                                transports en commun ?</p>
+                                <% if (user.role === "agent") { %>
+                                    <button
+                                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline p-0 h-auto text-sm"
+                                    data-id="32">    
+                                    Répondre
+                                </button> 
+                                    <% } %>
+                                
+                        </div>
+                    </div>
+                    <div class="ml-12 mt-2" data-id="37">
+                        <div class="flex items-start space-x-4" data-id="38"><span
+                                class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="39"><span
+                                    class="flex h-full w-full items-center justify-center rounded-full bg-muted"
+                                    data-id="40">A</span></span>
+                            <div class="flex-1 space-y-1" data-id="41">
+                                <p class="text-sm font-medium" data-id="42">Agent Immobilier</p>
+                                <p class="text-sm text-muted-foreground" data-id="43">2023-05-16</p>
+                                <p class="text-sm" data-id="44">Oui, il y a une station de métro à seulement 5 minutes à
+                                    pied !</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+                
+            </div>
+        </div>
+</div>
