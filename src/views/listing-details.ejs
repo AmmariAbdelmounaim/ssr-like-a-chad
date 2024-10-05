@@ -64,47 +64,220 @@
                         <%=listing.description%>
                     </p>
                     <h3 class="text-xl font-semibold my-4" data-id="19">Commentaires</h3>
-                <form class="space-y-4 mb-6" data-id="20">
-                        <textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        placeholder="Ajouter un commentaire..." required="" data-id="22"></textarea><button
-                        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
-                        type="submit" data-id="23">Poster le commentaire</button></form>
-                <div class="mb-4" data-id="24">
-                    <div class="flex items-start space-x-4" data-id="25"><span
-                            class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="26"><span
-                                class="flex h-full w-full items-center justify-center rounded-full bg-muted"
-                                data-id="27">J</span></span>
-                        <div class="flex-1 space-y-1" data-id="28">
-                            <p class="text-sm font-medium" data-id="29">John Doe</p>
-                            <p class="text-sm text-muted-foreground" data-id="30">2023-05-15</p>
-                            <p class="text-sm" data-id="31">Cet appartement a l'air fantastique ! Est-il proche des
-                                transports en commun ?</p>
-                                <% if (user.role === "agent") { %>
-                                    <button
-                                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline p-0 h-auto text-sm"
-                                    data-id="32">    
-                                    Répondre
-                                </button> 
-                                    <% } %>
-                                
-                        </div>
-                    </div>
-                    <div class="ml-12 mt-2" data-id="37">
-                        <div class="flex items-start space-x-4" data-id="38"><span
-                                class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="39"><span
-                                    class="flex h-full w-full items-center justify-center rounded-full bg-muted"
-                                    data-id="40">A</span></span>
-                            <div class="flex-1 space-y-1" data-id="41">
-                                <p class="text-sm font-medium" data-id="42">Agent Immobilier</p>
-                                <p class="text-sm text-muted-foreground" data-id="43">2023-05-16</p>
-                                <p class="text-sm" data-id="44">Oui, il y a une station de métro à seulement 5 minutes à
-                                    pied !</p>
+                    <% if (user.role==="user" ) { %>
+                        <form class="space-y-4 mb-6" id="userCommentForm">
+                            <textarea
+                                class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                placeholder="Ajouter un commentaire..." required="" id="userCommentTextArea"></textarea>
+
+                            <button
+                                class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                                type="submit" data-id="23">
+                                Poster le commentaire
+                            </button>
+                        </form>
+                        <% } %>
+
+                            <div id="comments-container" class="mb-4" data-id="24">
+                                <!-- Comments will be dynamically inserted here -->
                             </div>
-                        </div>
-                    </div>
                 </div>
-                </div>
-                
+
             </div>
         </div>
 </div>
+<div id="replyModal" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+    <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+        <div class="mt-3 text-center">
+            <h3 class="text-lg text-start leading-6 font-medium text-gray-900">Répondre au commentaire</h3>
+            <div class="mt-2">
+                <textarea id="replyText" class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                    placeholder="Votre réponse..."></textarea>
+            </div>
+            <div class="mt-4 flex gap-2 justify-end">
+                <button id="sendReply"
+                    class="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2">Envoyer</button>
+                <button id="closeModal"
+                    class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const commentsContainer = document.querySelector('#comments-container');
+        const replyModal = document.getElementById('replyModal');
+        const replyText = document.getElementById('replyText');
+        const sendReplyButton = document.getElementById('sendReply');
+        const closeModalButton = document.getElementById('closeModal');
+        let currentCommentId = null;
+        const username = "<%=user.username%>"
+        const listingId = window.location.pathname.split("/").pop();
+        const commentForm = document.getElementById('userCommentForm');
+        const commentTextarea = document.getElementById('userCommentTextArea');
+
+        fetch(`http://localhost:8000/api/${listingId}/user-comments`)
+            .then(response => response.json())
+            .then(comments => {
+                if (comments.length === 0) {
+                    const noCommentsPlaceholder = document.createElement('p');
+                    noCommentsPlaceholder.classList.add('text-muted-foreground', 'text-sm', 'italic');
+                    noCommentsPlaceholder.textContent = 'Aucun commentaire pour le moment.';
+                    commentsContainer.appendChild(noCommentsPlaceholder);
+                } else {
+
+                    comments.forEach(comment => {
+                        const commentElement = document.createElement('div');
+                        commentElement.classList.add('comment');
+                        commentElement.innerHTML = `
+                    <div class="flex items-start space-x-4">
+                        <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="26">
+                            <span class="flex h-full w-full items-center justify-center rounded-full bg-muted" data-id="27">${comment.author.username.split(" ").map((word) => word[0].toUpperCase()).join("")}</span></span>
+                        <div class="flex-1 space-y-1">
+                            <p class="text-sm font-medium">${comment.author.username}</p>
+                            <p class="text-sm text-muted-foreground">${new Date(comment.createdAt).toLocaleDateString('fr-FR')}</p>
+                            <p class="text-sm">${comment.text}</p>
+                        <% if (user.role === "agent") { %>
+                            <button class="reply-button inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline p-0 h-auto text-sm" data-id="32" data-comment-id="${comment._id}">Répondre</button>
+                        <% } %>
+                        </div>
+                    </div>
+                        `;
+
+                        if (comment.responses && comment.responses.length > 0) {
+                            const responsesContainer = document.createElement('div');
+                            responsesContainer.classList.add('ml-12', 'mt-2');
+
+                            comment.responses.forEach(response => {
+                                if (response.author.username) {
+                                    const responseElement = document.createElement('div');
+                                    responseElement.classList.add('response');
+                                    responseElement.innerHTML = `
+                                <div class="flex items-start space-x-4">
+                                    <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="26"><span class="flex h-full w-full items-center justify-center rounded-full bg-muted" data-id="27">${response.author.username.split(" ").map((word) => word[0].toUpperCase()).join("")} </span></span>
+                                    <div class="flex-1 space-y-1">
+                                        <p class="text-sm font-medium">${response.author.username}</p>
+                                        <p class="text-sm text-muted-foreground">${new Date(response.createdAt).toLocaleDateString('fr-FR')}</p>
+                                        <p class="text-sm">${response.text}</p>
+                                    </div>
+                                </div>
+                                
+                            `;
+                                    responsesContainer.appendChild(responseElement);
+                                }
+
+                            });
+
+                            commentElement.appendChild(responsesContainer);
+                        }
+
+                        commentsContainer.appendChild(commentElement);
+                    });
+                }
+            })
+            .catch(error => console.error('Error fetching comments:', error));
+
+
+        if (commentsContainer) {
+            commentsContainer.addEventListener('click', function (event) {
+                if (event.target.matches('.reply-button')) {
+                    currentCommentId = event.target.dataset.commentId;
+                    replyModal.classList.remove('hidden');
+                }
+            });
+        }
+
+
+        if (commentForm) {
+            commentForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                const commentText = commentTextarea.value;
+                if (commentText) {
+                    fetch(`http://localhost:8000/api/${listingId}/comment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ text: commentText })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Comment added:', data);
+                            const commentElement = document.createElement('div');
+                            commentElement.classList.add('comment');
+                            commentElement.innerHTML = `
+                            <div class="flex items-start space-x-4">
+                                <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="26">
+                                    <span class="flex h-full w-full items-center justify-center rounded-full bg-muted" data-id="27">${username.split(" ").map((word) => word[0].toUpperCase()).join("")}</span>
+                                </span>
+                                <div class="flex-1 space-y-1">
+                                    <p class="text-sm font-medium">${username}</p>
+                                    <p class="text-sm text-muted-foreground">${new Date(data.createdAt).toLocaleDateString('fr-FR')}</p>
+                                    <p class="text-sm">${data.text}</p>
+                                </div>
+                            </div>
+                        `;
+                            commentsContainer.prepend(commentElement);
+                            commentTextarea.value = '';
+                        })
+                        .catch(error => console.error('Error adding comment:', error));
+                }
+            });
+
+        }
+
+        if (closeModalButton) {
+            closeModalButton.addEventListener('click', function () {
+                replyModal.classList.add('hidden');
+                replyText.value = '';
+            });
+        }
+
+        if (sendReplyButton) {
+            sendReplyButton.addEventListener('click', function () {
+                const replyContent = replyText.value;
+                console.log(replyContent)
+                if (replyContent && currentCommentId) {
+                    fetch(`http://localhost:8000/api/comment/${currentCommentId}/reply`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ text: replyContent })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Reply sent:', data);
+                            // Add the new reply to the DOM
+                            const commentElement = document.querySelector(`[data-comment-id="${currentCommentId}"]`).closest('.comment');
+                            const responsesContainer = commentElement.querySelector('.responses-container') || document.createElement('div');
+                            responsesContainer.classList.add('ml-12', 'mt-2', 'responses-container');
+
+                            const responseElement = document.createElement('div');
+                            responseElement.classList.add('response');
+                            responseElement.innerHTML = `
+                        <div class="flex items-start space-x-4">
+                            <span class="relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full" data-id="26"><span class="flex h-full w-full items-center justify-center rounded-full bg-muted" data-id="27">${username.split(" ").map((word) => word[0].toUpperCase()).join("")}</span></span>
+                            <div class="flex-1 space-y-1">
+                                <p class="text-sm font-medium">${username}</p>
+                                <p class="text-sm text-muted-foreground">${new Date(data.createdAt).toLocaleDateString('fr-FR')}</p>
+                                <p class="text-sm">${data.text}</p>
+                            </div>
+                        </div>
+                    `;
+                            responsesContainer.appendChild(responseElement);
+                            if (!commentElement.contains(responsesContainer)) {
+                                commentElement.appendChild(responsesContainer);
+                            }
+
+                            replyModal.classList.add('hidden');
+                            replyText.value = '';
+                        })
+                        .catch(error => console.error('Error sending reply:', error));
+                }
+            });
+        }
+
+    });
+</script>

@@ -18,6 +18,7 @@ import {
   updateComment,
   getCommentWithReplies,
   deletePropertyImage,
+  getUserCommentsForProperty,
 } from "../services/apiServices";
 import { cookieAuthentication } from "../middlewares/cookieAuthentication";
 
@@ -107,18 +108,25 @@ apiRouter.delete(
 // -------------------- COMMENT ROUTES --------------------
 
 // Ajouter un commentaire à une propriété (nécessite une authentification)
-apiRouter.post("/:propertyId/comments", cookieAuthentication, addComment);
+apiRouter.post("/:propertyId/comment", cookieAuthentication,authorizeRole(["user"]), addComment);
+
+
+
 
 // Récupérer tous les commentaires associés à une propriété (accessible à tout le monde)
 apiRouter.get("/:propertyId/comments", getCommentsForProperty);
 
+// Get only user comments
+apiRouter.get("/:propertyId/user-comments", getUserCommentsForProperty);
+
 // Supprimer un commentaire (nécessite une authentification)
 apiRouter.delete("/comment/:commentId", cookieAuthentication, deleteComment);
 
-// Répondre à un commentaire existant (nécessite une authentification)
+// Répondre à un commentaire existant (nécessite un agent)
 apiRouter.post(
   "/comment/:commentId/reply",
   cookieAuthentication,
+  authorizeRole(["agent"]),
   replyToComment
 );
 

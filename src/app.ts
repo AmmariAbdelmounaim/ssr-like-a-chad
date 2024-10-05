@@ -8,7 +8,7 @@ import passport from "passport";
 import cookieParser from "cookie-parser";
 import apiRouter from "./routes/apiRoutes";
 import viewRouter from "./routes/viewRoutes";
-
+import cors from "cors";
 // Load environment variables from .env file
 dotenv.config();
 
@@ -25,6 +25,8 @@ app.set("views", path.join(__dirname, "views"));
 // Body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
+
 
 // Static assets
 app.use(express.static(path.join(__dirname, "public")));
