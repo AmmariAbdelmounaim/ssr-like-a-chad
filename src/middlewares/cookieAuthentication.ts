@@ -18,13 +18,10 @@ export const cookieAuthentication = async (
     ["cookie"],
     { session: false },
     (err: any, user: any) => {
-      if (err) {
+      if (err || !user) {
         console.log("Authentication error: ", err);
         return res.redirect("/auth/login");
-      }
-      if (!user) {
-        console.log("No user found, redirecting to /auth/login");
-        return res.redirect("/auth/login");
+
       }
       req.user = user; // Attach user to request
       console.log("User authenticated:", user);

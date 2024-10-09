@@ -76,7 +76,9 @@ async function validateLoginForm(event) {
       } else if (data.role === "agent") {
         window.location.href = "/dashboard";
       } else {
-        alert("Unauthorized");
+        error.classList.remove("hidden");
+        error.classList.add("flex");
+        error.textContent = "Email ou mot de passe incorrect";
       }
     } catch (error) {
       error.classList.remove("hidden");

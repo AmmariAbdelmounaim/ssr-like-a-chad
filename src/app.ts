@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import path from "path";
 import { connectToMongoDB } from "./config/databaseConfig";
-import { bearerStrategy } from "./config/passportBearerStrategy";
 import { cookieStrategy } from "./config/passportCookieStrategy";
 import dotenv from "dotenv";
 import passport from "passport";
@@ -25,8 +24,11 @@ app.set("views", path.join(__dirname, "views"));
 // Body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
-
+app.use(cors({
+  origin: 'http://localhost:8000', // Replace with your frontend URL if different
+  methods: 'GET,POST,PUT,DELETE',
+  credentials: true // If you're using cookies or other credentials
+}));
 
 // Static assets
 app.use(express.static(path.join(__dirname, "public")));
@@ -40,7 +42,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(passport.initialize());
 
 // Configs :
-bearerStrategy();
 cookieStrategy();
 
 // Use routes

@@ -31,6 +31,7 @@
         </div>
       </div>
     </div>
+    </a>
     <div class="p-6 flex-grow">
       <p class="text-sm text-gray-600 mb-2 line-clamp-2">
         <%=listing.description%>
@@ -56,7 +57,7 @@
         <button
           class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 w-10"
         
-          onclick="showDeleteModal()"
+          onclick="event.stopPropagation();showDeleteModal('<%=listing._id%>')"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -118,19 +119,21 @@
             Cancel
           </button>
           <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-4 py-2"
-          onclick="deleteProperty('<%=listing._id%>')"
+          onclick="deleteProperty()"
           >
             Delete
           </button>
         </div>
       </div>
-    </div>
-  </a>  
+    </div>  
   
 </div>
 
 <script>
-  function showDeleteModal() {
+  let currentPropertyId = null;
+
+  function showDeleteModal(propertyId) {
+    currentPropertyId = propertyId;
     document.getElementById("deleteModal").classList.remove("hidden");
   }
 
@@ -138,9 +141,11 @@
     document.getElementById("deleteModal").classList.add("hidden");
   }
 
-  async function deleteProperty(propertyId) {
+  async function deleteProperty() {
+    if (!currentPropertyId) return;
+
     try {
-      const response = await fetch(`/api/property/${propertyId}`, {
+      const response = await fetch(`/api/property/${currentPropertyId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json'
@@ -151,7 +156,7 @@
         // Handle successful deletion
         hideDeleteModal();
         // Remove the card from the DOM
-        document.querySelector(`[data-id="${propertyId}"]`).remove();
+        document.querySelector(`[data-id="${currentPropertyId}"]`).remove();
       } else {
         // Handle errors
         alert('Failed to delete property');

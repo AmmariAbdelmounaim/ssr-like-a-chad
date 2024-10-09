@@ -131,7 +131,7 @@ async function handleImageUpload(propertyId, imgData) {
       });
       console.log(response);
     } catch (error) {
-      alert("Error uploading image");
+      console.error("Error uploading image");
       break; // Exit the loop if an error occurs
     }
   }
@@ -148,7 +148,7 @@ async function handleImageDeletion(propertyId, imageUrl) {
     });
     console.log(response);
   } catch (error) {
-    alert("Error deleting image");
+    console.error("Error deleting image");
   }
 }
 
@@ -296,7 +296,7 @@ async function validateEditListingForm(event) {
           handleImageUpload(listingId, imgData);
         }
       }
-      // window.location.href = "/dashboard";
+      window.location.href = "/dashboard";
     } catch (error) {
       error.classList.remove("hidden");
       error.classList.add("flex");
