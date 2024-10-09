@@ -35,8 +35,8 @@ I have to admit, I'm genuinely impressed with the outcome, and I actually find i
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/your-username/your-repository.git
-   cd your-repository
+   git clone [https://github.com/your-username/your-repository.git](https://github.com/AmmariAbdelmounaim/ssr-like-a-chad.git)
+   cd ssr-like-a-chad
    ```
 
 2. **Install dependencies**:
