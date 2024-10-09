@@ -1,4 +1,4 @@
-# Node.js Express Project - 100% Server-Side Rendered App
+# Server-Side Rendered App Using Only Node.js Express 
 
 Welcome to my Node.js Express project! This app is built entirely using Node.js and Express, and showcases how far you can go with a completely server-side rendered approach. No fancy frameworks here—just classic technologies combined with a modern touch.
 
