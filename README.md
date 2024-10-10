@@ -42,7 +42,7 @@ I have to admit, I'm genuinely impressed with the outcome, and I actually find i
 2. **Install dependencies**:
 
    ```bash
-   npm run watch
+   npm install
    ```
 
 3. **Set up environment variables**:
@@ -50,7 +50,7 @@ I have to admit, I'm genuinely impressed with the outcome, and I actually find i
 4. **Run the development server**:
 
    ```bash
-   npm run dev
+   npm run watch
    ```
 
 5. **Access the app**:
@@ -60,12 +60,3 @@ I have to admit, I'm genuinely impressed with the outcome, and I actually find i
 ## Contributing
 
 Feel free to open issues and submit pull requests if you'd like to contribute or report any bugs.
-
-## License
-
-This project is licensed under the MIT License.
-
----
-
-Thanks for checking out the project! If you have any questions or suggestions, feel free to reach out.
-
