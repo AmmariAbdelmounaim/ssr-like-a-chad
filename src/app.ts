@@ -8,6 +8,9 @@ import cookieParser from "cookie-parser";
 import apiRouter from "./routes/apiRoutes";
 import viewRouter from "./routes/viewRoutes";
 import cors from "cors";
+import swaggerJsDoc from "swagger-jsdoc";
+import swaggerUi from "swagger-ui-express"; // Importez swagger-ui-express et swagger-jsdoc
+
 // Load environment variables from .env file
 dotenv.config();
 
@@ -15,6 +18,22 @@ export const app = express();
 
 // MongoDB
 connectToMongoDB();
+
+// Swagger configuration
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "API Immobilier",
+      version: "1.0.0",
+      description: "API pour la gestion des propriétés et des commentaires",
+    },
+  },
+  apis: ["./src/routes/apiRoutes.ts"], // Remplacez par le chemin de votre fichier de routes
+};
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // EJS
 app.set("view engine", "ejs");
