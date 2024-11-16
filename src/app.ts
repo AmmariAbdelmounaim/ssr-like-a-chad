@@ -12,6 +12,10 @@ import swaggerJsDoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
 import { googleStrategy } from "./config/passportGoogleStrategy";
 import session from "express-session";
+import { schema } from "./graphql/schema";
+import { resolvers } from "./graphql/resolvers";
+import { graphqlHTTP } from "express-graphql";
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -75,6 +79,15 @@ app.use(passport.session());
 // Configs :
 cookieStrategy();
 googleStrategy();
+// GraphQL middleware
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema: schema, // Schéma GraphQL
+    rootValue: resolvers, // Résolveurs associés
+    graphiql: true, // Interface interactive
+  })
+);
 // Use routes
 app.use("/api", apiRouter);
 app.use("/", viewRouter);
