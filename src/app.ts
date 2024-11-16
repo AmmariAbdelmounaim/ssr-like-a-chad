@@ -9,7 +9,9 @@ import apiRouter from "./routes/apiRoutes";
 import viewRouter from "./routes/viewRoutes";
 import cors from "cors";
 import swaggerJsDoc from "swagger-jsdoc";
-import swaggerUi from "swagger-ui-express"; // Importez swagger-ui-express et swagger-jsdoc
+import swaggerUi from "swagger-ui-express";
+import { googleStrategy } from "./config/passportGoogleStrategy";
+import session from "express-session";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -19,6 +21,14 @@ export const app = express();
 // MongoDB
 connectToMongoDB();
 
+// Configure session middleware
+app.use(
+  session({
+    secret: "secret", // Use a strong secret
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 // Swagger configuration
 const swaggerOptions = {
   swaggerDefinition: {
@@ -43,11 +53,13 @@ app.set("views", path.join(__dirname, "views"));
 // Body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:8000', // Replace with your frontend URL if different
-  methods: 'GET,POST,PUT,DELETE',
-  credentials: true // If you're using cookies or other credentials
-}));
+app.use(
+  cors({
+    origin: "http://localhost:8000", // Replace with your frontend URL if different
+    methods: "GET,POST,PUT,DELETE",
+    credentials: true, // If you're using cookies or other credentials
+  })
+);
 
 // Static assets
 app.use(express.static(path.join(__dirname, "public")));
@@ -59,10 +71,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 app.use(passport.initialize());
-
+app.use(passport.session());
 // Configs :
 cookieStrategy();
-
+googleStrategy();
 // Use routes
 app.use("/api", apiRouter);
 app.use("/", viewRouter);

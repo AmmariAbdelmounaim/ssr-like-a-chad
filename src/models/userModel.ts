@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 
 // Define a User interface
 export interface IUser extends Document {
-  _id: mongoose.Types.ObjectId; 
+  _id: mongoose.Types.ObjectId;
   username: string;
   password: string;
   email: string;
@@ -14,11 +14,11 @@ export interface IUser extends Document {
 
 // Define a User model
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: false },
-  password: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  username: { type: String, required: false, unique: false },
+  password: { type: String, required: false },
+  email: { type: String, required: false, unique: true },
   agencyName: { type: String, required: false },
-  role: { type: String, required: true, enum: ["user", "agent"] },
+  role: { type: String, required: false, enum: ["user", "agent"] },
   token: { type: String, required: false },
 });
 
@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  if (this.password) this.password = await bcrypt.hash(this.password, salt);
   next();
 });
 

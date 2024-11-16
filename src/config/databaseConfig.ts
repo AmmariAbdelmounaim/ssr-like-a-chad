@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 export async function connectToMongoDB() {
-  const uri = "mongodb://localhost:27017/tp-web-mongo";
+  const uri = process.env.DATABASE_URI;
   if (!uri) {
     throw new Error("DATABASE_URI is not set");
   }
