@@ -21,6 +21,7 @@ import {
   getUserCommentsForProperty,
 } from "../services/apiServices";
 import { cookieAuthentication } from "../middlewares/cookieAuthentication";
+import passport from "passport";
 
 const apiRouter = Router();
 
@@ -92,6 +93,40 @@ apiRouter.post("/auth/login", loginUser);
 
 /**
  * @swagger
+ * /api/auth/google:
+ *   get:
+ *     summary: Initiate Google authentication
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirect to Google for authentication
+ */
+apiRouter.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+/**
+ * @swagger
+ * /api/auth/google/callback:
+ *   get:
+ *     summary: Google authentication callback
+ *     tags: [Authentication]
+ *     responses:
+ *       302:
+ *         description: Redirect to dashboard after successful authentication
+ */
+apiRouter.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/auth/login" }),
+  (req, res) => {
+    // Successful authentication, redirect to dashboard.
+    res.redirect("/annonce");
+  }
+);
+
+/**
+ * @swagger
  * /api/logout:
  *   post:
  *     summary: Logout a user
@@ -153,7 +188,12 @@ apiRouter.post("/logout", logoutUser);
  *       201:
  *         description: Property created successfully
  */
-apiRouter.post("/property", cookieAuthentication, authorizeRole(["agent"]), createProperty);
+apiRouter.post(
+  "/property",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  createProperty
+);
 
 /**
  * @swagger
@@ -349,7 +389,12 @@ apiRouter.delete(
  *       201:
  *         description: Comment added successfully
  */
-apiRouter.post("/:propertyId/comment", cookieAuthentication, authorizeRole(["user", "agent"]), addComment);
+apiRouter.post(
+  "/:propertyId/comment",
+  cookieAuthentication,
+  authorizeRole(["user", "agent"]),
+  addComment
+);
 
 /**
  * @swagger
@@ -383,7 +428,12 @@ apiRouter.get("/:propertyId/comments", getCommentsForProperty);
  *       200:
  *         description: List of user comments
  */
-apiRouter.get("/:propertyId/user-comments", cookieAuthentication, authorizeRole(["user"]), getUserCommentsForProperty);
+apiRouter.get(
+  "/:propertyId/user-comments",
+  cookieAuthentication,
+  authorizeRole(["user"]),
+  getUserCommentsForProperty
+);
 
 /**
  * @swagger
@@ -402,7 +452,12 @@ apiRouter.get("/:propertyId/user-comments", cookieAuthentication, authorizeRole(
  *       200:
  *         description: Comment deleted successfully
  */
-apiRouter.delete("/comment/:commentId", cookieAuthentication, authorizeRole(["user", "agent"]), deleteComment);
+apiRouter.delete(
+  "/comment/:commentId",
+  cookieAuthentication,
+  authorizeRole(["user", "agent"]),
+  deleteComment
+);
 
 /**
  * @swagger
@@ -431,7 +486,12 @@ apiRouter.delete("/comment/:commentId", cookieAuthentication, authorizeRole(["us
  *       201:
  *         description: Reply added successfully
  */
-apiRouter.post("/comment/:commentId/reply", cookieAuthentication, authorizeRole(["agent"]), replyToComment);
+apiRouter.post(
+  "/comment/:commentId/reply",
+  cookieAuthentication,
+  authorizeRole(["agent"]),
+  replyToComment
+);
 
 /**
  * @swagger
@@ -460,7 +520,12 @@ apiRouter.post("/comment/:commentId/reply", cookieAuthentication, authorizeRole(
  *       200:
  *         description: Comment updated successfully
  */
-apiRouter.put("/comment/:commentId", cookieAuthentication, authorizeRole(["user", "agent"]), updateComment);
+apiRouter.put(
+  "/comment/:commentId",
+  cookieAuthentication,
+  authorizeRole(["user", "agent"]),
+  updateComment
+);
 
 /**
  * @swagger
@@ -478,6 +543,5 @@ apiRouter.put("/comment/:commentId", cookieAuthentication, authorizeRole(["user"
  *         description: Comment with replies
  */
 apiRouter.get("/comment/:commentId", getCommentWithReplies);
-
 
 export default apiRouter;

@@ -6,6 +6,11 @@ export const cookieAuthentication = async (
   res: Response,
   next: NextFunction
 ) => {
+  if (req.isAuthenticated()) {
+    // If the user is authenticated via session
+    return next();
+  }
+
   const token = req.cookies.token;
   console.log("Token received: ", token);
 
@@ -21,7 +26,6 @@ export const cookieAuthentication = async (
       if (err || !user) {
         console.log("Authentication error: ", err);
         return res.redirect("/auth/login");
-
       }
       req.user = user; // Attach user to request
       console.log("User authenticated:", user);

@@ -4,6 +4,7 @@ import { authorizeRole } from "../middlewares/authorizeRole";
 import { getAgentProperties, getAllProperties } from "../services/apiServices";
 import { PropertyListing } from "../models/propertyLisingModel";
 import { IUser } from "../models/userModel";
+import { ensureAuthenticated } from "../config/authentication";
 const viewRouter = Router();
 
 viewRouter.get("/", (req, res) => {
@@ -76,18 +77,31 @@ viewRouter.get(
   authorizeRole(["user"]),
   async (req: Request, res: Response) => {
     const loggedInUser = req.user;
-    const properties = await PropertyListing.find({ publicationStatus: 'publié' });
-    res.render("protected/user/annonce", { user: loggedInUser,properties:properties });
+    const properties = await PropertyListing.find({
+      publicationStatus: "publié",
+    });
+    res.render("protected/user/annonce", {
+      user: loggedInUser,
+      properties: properties,
+    });
   }
 );
 
-viewRouter.get("/listing-details/:id",cookieAuthentication,authorizeRole(["user","agent"]),async (req: Request, res: Response) => {
-  const listingId = req.params.id;
-  const loggedInUser = req.user;
-  const propertyListing = await PropertyListing.findOne({
-    _id: listingId,
-  });
-  res.render("listing-details",{user:loggedInUser,listing:propertyListing});
-});
+viewRouter.get(
+  "/listing-details/:id",
+  cookieAuthentication,
+  authorizeRole(["user", "agent"]),
+  async (req: Request, res: Response) => {
+    const listingId = req.params.id;
+    const loggedInUser = req.user;
+    const propertyListing = await PropertyListing.findOne({
+      _id: listingId,
+    });
+    res.render("listing-details", {
+      user: loggedInUser,
+      listing: propertyListing,
+    });
+  }
+);
 
 export default viewRouter;
