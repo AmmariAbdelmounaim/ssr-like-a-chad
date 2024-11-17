@@ -38,6 +38,13 @@ const apiRouter = Router();
  *   post:
  *     summary: Register a new user
  *     tags: [Authentication]
+ *     description: |
+ *       This endpoint registers a new user. The user details are provided in the request body.
+ *       The service performs the following steps:
+ *       1. Validates the input data.
+ *       2. Hashes the password.
+ *       3. Saves the user to the database.
+ *       4. Returns a success message upon successful registration.
  *     requestBody:
  *       required: true
  *       content:
@@ -63,6 +70,10 @@ const apiRouter = Router();
  *     responses:
  *       201:
  *         description: User registered successfully
+ *       400:
+ *         description: Bad request, invalid input data
+ *       500:
+ *         description: Internal server error
  */
 apiRouter.post("/auth/register", registerUser);
 
@@ -72,6 +83,13 @@ apiRouter.post("/auth/register", registerUser);
  *   post:
  *     summary: Login a user
  *     tags: [Authentication]
+ *     description: |
+ *       This endpoint logs in a user. The user credentials are provided in the request body.
+ *       The service performs the following steps:
+ *       1. Validates the input data.
+ *       2. Checks the user's credentials against the database.
+ *       3. If valid, generates a session or token for the user.
+ *       4. Returns a success message and user details upon successful login.
  *     requestBody:
  *       required: true
  *       content:
@@ -88,6 +106,10 @@ apiRouter.post("/auth/register", registerUser);
  *     responses:
  *       200:
  *         description: User logged in successfully
+ *       401:
+ *         description: Unauthorized, invalid credentials
+ *       500:
+ *         description: Internal server error
  */
 apiRouter.post("/auth/login", loginUser);
 
@@ -150,6 +172,14 @@ apiRouter.post("/logout", logoutUser);
  *   post:
  *     summary: Create a new property
  *     tags: [Properties]
+ *     description: |
+ *       This endpoint allows an agent to create a new property listing. The agent must be authenticated and authorized to perform this action.
+ *       The service performs the following steps:
+ *       1. Validates the input data.
+ *       2. Associates the property with the authenticated agent.
+ *       3. Saves the property to the database.
+ *       4. Optionally handles image uploads and associates them with the property.
+ *       5. Returns a success message and the created property details upon successful creation.
  *     security:
  *       - cookieAuth: []
  *     requestBody:
@@ -187,6 +217,56 @@ apiRouter.post("/logout", logoutUser);
  *     responses:
  *       201:
  *         description: Property created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Propriété créée avec succès."
+ *                 property:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       example: "60d21b4667d0d8992e610c85"
+ *                     title:
+ *                       type: string
+ *                       example: Beautiful apartment for rent
+ *                     propertyType:
+ *                       type: string
+ *                       example: location
+ *                     publicationStatus:
+ *                       type: string
+ *                       example: publié
+ *                     propertyStatus:
+ *                       type: string
+ *                       example: disponible
+ *                     description:
+ *                       type: string
+ *                       example: "A beautiful apartment with 3 bedrooms and 2 bathrooms."
+ *                     price:
+ *                       type: number
+ *                       example: 1200
+ *                     availabilityDate:
+ *                       type: string
+ *                       format: date
+ *                       example: "2023-01-01"
+ *                     agent:
+ *                       type: string
+ *                       example: "60d21b4667d0d8992e610c85"
+ *                     photos:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                         example: "https://example.com/image.jpg"
+ *       400:
+ *         description: Bad request, invalid input data
+ *       403:
+ *         description: Forbidden, user not authorized
+ *       500:
+ *         description: Internal server error
  */
 apiRouter.post(
   "/property",
@@ -196,18 +276,24 @@ apiRouter.post(
 );
 
 /**
+
  * @swagger
  * /api/property/{propertyId}/uploadImage:
+
  *   post:
  *     summary: Upload an image for a property
+
  *     tags: [Properties]
+
  *     parameters:
  *       - in: path
  *         name: propertyId
+
  *         required: true
  *         description: ID of the property
  *     security:
  *       - cookieAuth: []
+
  *     requestBody:
  *       required: true
  *       content:
@@ -219,9 +305,57 @@ apiRouter.post(
  *                 type: string
  *                 format: binary
  *     responses:
+
  *       200:
  *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+
+ *               type: object
+ *               properties:
+ *                 message:
+
+ *                   type: string
+ *                   example: "Image ajoutée avec succès."
+
+ *                 property:
+ *                   type: object
+ *                   properties:
+
+ *                     id:
+ *                       type: string
+ *                       example: "60d21b4667d0d8992e610c85"
+ *                     photos:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                         example: "https://example.com/image.jpg"
+ *       404:
+ *         description: Property not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Annonce non trouvée."
+ *       500:
+ *         description: Internal server error
+
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+
+ *                 error:
+
+ *                   type: string
+ *                   example: "Erreur interne du serveur."
  */
+
 apiRouter.post(
   "/property/:propertyId/uploadImage",
   cookieAuthentication,

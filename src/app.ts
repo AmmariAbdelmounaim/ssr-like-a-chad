@@ -14,8 +14,7 @@ import { googleStrategy } from "./config/passportGoogleStrategy";
 import session from "express-session";
 import { schema } from "./graphql/schema";
 import { resolvers } from "./graphql/resolvers";
-import { graphqlHTTP } from "express-graphql";
-
+import { createHandler } from "graphql-http/lib/use/express";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -43,7 +42,7 @@ const swaggerOptions = {
       description: "API pour la gestion des propriétés et des commentaires",
     },
   },
-  apis: ["./src/routes/apiRoutes.ts"], // Remplacez par le chemin de votre fichier de routes
+  apis: ["./src/routes/apiRoutes.ts"], // Adjust the path as necessary
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -82,10 +81,9 @@ googleStrategy();
 // GraphQL middleware
 app.use(
   "/graphql",
-  graphqlHTTP({
-    schema: schema, // Schéma GraphQL
-    rootValue: resolvers, // Résolveurs associés
-    graphiql: true, // Interface interactive
+  createHandler({
+    schema: schema,
+    rootValue: resolvers,
   })
 );
 // Use routes

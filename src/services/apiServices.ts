@@ -41,7 +41,6 @@ export const registerUser = async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "Utilisateur enregistré avec succès." });
   } catch (error) {
-    console.error("Erreur lors de l'enregistrement :", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -73,10 +72,12 @@ export const loginUser = async (req: Request, res: Response) => {
 
     res.cookie("token", token, { httpOnly: true });
 
-    return res.status(200).json({ role: user.role });
+    return res.status(200).json({ role: user.role, token: user.token });
   } catch (error) {
-    console.error("Erreur lors de la connexion :", error);
-    return res.status(500).json({ error: "Erreur interne du serveur." });
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: `Erreur interne du serveur: ${error}` });
   }
 };
 
@@ -106,6 +107,7 @@ export const createProperty = async (req: Request, res: Response) => {
       price,
       availabilityDate,
     } = req.body;
+
     const customReq = req as unknown as MulterRequest; // Cast req to MulterRequest to access files
     const user = req.user as IUser;
 
@@ -142,7 +144,7 @@ export const createProperty = async (req: Request, res: Response) => {
       .status(201)
       .json({ message: "Propriété créée avec succès.", property: newProperty });
   } catch (error) {
-    console.error("Erreur lors de la création de la propriété:", error);
+    console.error(error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -157,7 +159,6 @@ export const getAllProperties = async (req: Request, res: Response) => {
     }
     return res.status(200).json(properties);
   } catch (error) {
-    console.error("Erreur lors de la récupération des propriétés:", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -176,7 +177,6 @@ export const getAgentProperties = async (req: Request, res: Response) => {
 
     return res.status(200).json(properties);
   } catch (error) {
-    console.error("Erreur lors de la récupération des propriétés:", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -212,7 +212,6 @@ export const updateProperty = async (req: Request, res: Response) => {
       property: updatedProperty,
     });
   } catch (error) {
-    console.error("Erreur lors de la mise à jour de la propriété:", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -237,9 +236,6 @@ export const deletePropertyWithImages = async (req: Request, res: Response) => {
 
         // Vérifier si la clé existe avant d'envoyer la requête S3
         if (!photoKey) {
-          console.error(
-            `Erreur: Clé de l'image manquante pour l'image ${imageUrl}`
-          );
           continue; // Passer à l'image suivante si la clé est manquante
         }
 
@@ -258,10 +254,6 @@ export const deletePropertyWithImages = async (req: Request, res: Response) => {
       message: "Propriété et images associées supprimées avec succès.",
     });
   } catch (error) {
-    console.error(
-      "Erreur lors de la suppression de la propriété et des images:",
-      error
-    );
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -297,7 +289,6 @@ export const uploadPropertyImage = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Image ajoutée avec succès.", property });
   } catch (error) {
-    console.error("Erreur lors de l'ajout de l'image:", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
@@ -339,7 +330,6 @@ export const deletePropertyImage = async (req: Request, res: Response) => {
       .status(200)
       .json({ message: "Image supprimée avec succès.", property });
   } catch (error) {
-    console.error("Erreur lors de la suppression de l'image:", error);
     return res.status(500).json({ error: "Erreur interne du serveur." });
   }
 };
